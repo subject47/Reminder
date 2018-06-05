@@ -48,18 +48,15 @@ public class ExpenseServiceImpl implements ExpenseService {
     
     @Override
     public List<Expense> findAllExpensesForYearAndMonth(Year year, Month month) {
-
-    	
-    	
     	Calendar startDate = GregorianCalendar.getInstance();
     	startDate.set(Calendar.YEAR, year.getValue());
-    	startDate.set(Calendar.MONTH, month.getValue());
+    	startDate.set(Calendar.MONTH, month.getValue() - 1);
     	startDate.set(Calendar.DATE, 1);
     	startDate.add(Calendar.DATE, -1);
     	
     	Calendar endDate = GregorianCalendar.getInstance();
     	endDate.set(Calendar.YEAR, year.getValue());
-    	endDate.set(Calendar.MONTH, month.getValue());
+    	endDate.set(Calendar.MONTH, month.getValue() - 1);
     	endDate.set(Calendar.DATE, 1);
     	endDate.add(Calendar.MONTH, 1);
     	endDate.add(Calendar.DATE, -1);

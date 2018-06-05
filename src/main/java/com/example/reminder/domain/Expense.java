@@ -1,14 +1,21 @@
 package com.example.reminder.domain;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import com.example.reminder.utils.DateUtils;
+
 @Entity
 public class Expense extends AbstractDomainClass {
 
+	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+	
 	@ManyToOne
 	private User user;
 	private Double amount;
@@ -55,6 +62,11 @@ public class Expense extends AbstractDomainClass {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+	
+	@Override
+	public String toString() {
+		return String.format("Expense: %,.2f | %s | %s", amount, FORMATTER.format(DateUtils.asLocalDate(date)), category);
 	}
 
 }

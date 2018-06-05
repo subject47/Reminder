@@ -53,7 +53,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //        .and()
 //        .logout().permitAll();
 
-		httpSecurity.csrf().disable();
+		httpSecurity.csrf().disable();  // Is necessary for H2 DB access
 		httpSecurity.headers().frameOptions().disable();
 	}
 	

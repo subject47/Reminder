@@ -21,6 +21,9 @@ public class Category extends AbstractDomainClass {
 		this.description = description;
 	}
 	
-	
+	@Override
+	public String toString() {
+		return name + "(" + description + ")";
+	}
 	
 }
