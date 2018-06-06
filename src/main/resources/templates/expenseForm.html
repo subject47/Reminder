@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Expense Form</title>
+    <link rel="stylesheet" type="text/css" href="../static/css/guru.css" />
+    <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
+</head>
+<body>
+
+<div class="container">
+    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+
+    <form class="form-horizontal" th:action="@{/logout}" method="post">
+        <div class="form-group">
+            <div class="col-sm-10"> <h2>Expense Create/Update</h2></div>
+            <div class="col-sm-2" style="padding-top: 30px;">
+                <input  type="submit" value="Sign Out"/>
+            </div>
+        </div>
+    </form>
+
+    <div>
+        <form class="form-horizontal" th:object="${expenseForm}" th:action="@{/expense}" method="post">
+        	<input type="hidden" th:field="*{id}"/>
+        	<input type="hidden" th:field="*{version}"/>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Amount:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{amount}"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Date:</label>
+                <div class="col-sm-10">
+                    <input type="date" class="form-control" th:field="*{date}"/>
+                </div>
+            </div>
+<!--             <div class="form-group">
+                <label class="col-sm-2 control-label">Category:</label>
+                <div class="col-sm-10">
+                    <select th:field="*{categoryId}" id="category">
+						<option th:each="category:${expenseForm.categories}" th:value="${category.id}" th:utext="${category.name}" />
+					</select>
+                </div>
+            </div> -->
+            <div class="form-group">
+                <label class="col-sm-2 control-label">Description:</label>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" th:field="*{description}"/>
+                </div>
+            </div>
+            <div class="row">
+                <button type="submit" class="btn btn-default">Submit</button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+</body>
+</html>

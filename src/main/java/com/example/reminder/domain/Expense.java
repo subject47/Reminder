@@ -48,7 +48,7 @@ public class Expense extends AbstractDomainClass {
 		this.date = date;
 	}
 
-	public Category getCategoryId() {
+	public Category getCategory() {
 		return category;
 	}
 
