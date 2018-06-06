@@ -2,6 +2,7 @@ package com.example.reminder.forms;
 
 import java.util.Date;
 import java.util.List;
+import org.springframework.format.annotation.DateTimeFormat;
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
 
@@ -10,6 +11,7 @@ public class ExpenseForm {
   private int id;
   private int version;
   private Double amount;
+  @DateTimeFormat(pattern = "yyyy-MM-dd")
   private Date date;
   private String description;
   private List<Category> categories;

@@ -60,15 +60,15 @@ public class ExpenseController {
 
   @RequestMapping(value = "/expense")
   public String expense(ExpenseForm expenseForm) {
-    // int categoryId = expenseForm.getCategoryId();
-    // Category category = categoryService.getById(categoryId);
+    int categoryId = expenseForm.getCategoryId();
+    Category category = categoryService.getById(categoryId);
     Expense expense = new Expense();
-    // expense.setCategory(category);
+    expense.setCategory(category);
     expense.setAmount(expenseForm.getAmount());
     expense.setDate(expenseForm.getDate());
     expense.setDescription(expenseForm.getDescription());
     expenseService.save(expense);
-    return "dates";
+    return "index";
   }
 
 }
