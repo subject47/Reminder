@@ -62,11 +62,8 @@ public class ExpenseController {
   public String expense(ExpenseForm expenseForm) {
     int categoryId = expenseForm.getCategoryId();
     Category category = categoryService.getById(categoryId);
-    Expense expense = new Expense();
+    Expense expense = expenseForm.getExpense();
     expense.setCategory(category);
-    expense.setAmount(expenseForm.getAmount());
-    expense.setDate(expenseForm.getDate());
-    expense.setDescription(expenseForm.getDescription());
     expenseService.save(expense);
     return "index";
   }
