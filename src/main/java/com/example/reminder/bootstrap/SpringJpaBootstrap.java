@@ -145,36 +145,65 @@ public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedE
     Expense expense1 = new Expense();
     expense1.setAmount(2000.0);
     expense1.setDate(cal1.getTime());
-    expense1.setDescription("Expense description");
+    expense1.setDescription("Milk");
     expense1.setCategory(category1);
     expenseService.save(expense1);
 
     cal1.set(2018, Month.MAY.getValue() - 1, 31);
-    Category category2 = categoryService.findByName("Electronics");
+    Category category2 = categoryService.findByName("Food");
     Expense expense2 = new Expense();
     expense2.setAmount(6000.0);
     expense2.setDate(cal1.getTime());
-    expense2.setDescription("Expense 2 description");
+    expense2.setDescription("Meat");
     expense2.setCategory(category2);
     expenseService.save(expense2);
 
-    cal1.set(2018, Month.JUNE.getValue() - 1, 1);
-    Category category3 = categoryService.findByName("Medicine");
+    cal1.set(2018, Month.MAY.getValue() - 1, 31);
+    Category category3 = categoryService.findByName("Food");
     Expense expense3 = new Expense();
-    expense3.setAmount(500.0);
+    expense3.setAmount(3000.0);
     expense3.setDate(cal1.getTime());
-    expense3.setDescription("Expense 3 description");
+    expense3.setDescription("Bread");
     expense3.setCategory(category3);
     expenseService.save(expense3);
 
-    cal1.set(2018, Month.APRIL.getValue() - 1, 30);
-    Category category4 = categoryService.findByName("Utilities");
+    cal1.set(2018, Month.MAY.getValue() - 1, 31);
+    Category category4 = categoryService.findByName("Electronics");
     Expense expense4 = new Expense();
-    expense4.setAmount(7500.0);
+    expense4.setAmount(6000.0);
     expense4.setDate(cal1.getTime());
-    expense4.setDescription("Expense 4 description");
+    expense4.setDescription("TV");
     expense4.setCategory(category4);
     expenseService.save(expense4);
+
+    cal1.set(2018, Month.MAY.getValue() - 1, 31);
+    Category category5 = categoryService.findByName("Medicine");
+    Expense expense5 = new Expense();
+    expense5.setAmount(1500.0);
+    expense5.setDate(cal1.getTime());
+    expense5.setDescription("Pills");
+    expense5.setCategory(category5);
+    expenseService.save(expense5);
+
+
+
+    cal1.set(2018, Month.JUNE.getValue() - 1, 1);
+    Category category6 = categoryService.findByName("Medicine");
+    Expense expense6 = new Expense();
+    expense6.setAmount(500.0);
+    expense6.setDate(cal1.getTime());
+    expense6.setDescription("Expense 3 description");
+    expense6.setCategory(category6);
+    expenseService.save(expense6);
+
+    cal1.set(2018, Month.APRIL.getValue() - 1, 30);
+    Category category7 = categoryService.findByName("Utilities");
+    Expense expense7 = new Expense();
+    expense7.setAmount(7500.0);
+    expense7.setDate(cal1.getTime());
+    expense7.setDescription("Expense 4 description");
+    expense7.setCategory(category7);
+    expenseService.save(expense7);
   }
 
   private void assignExpensesToUsers() {
