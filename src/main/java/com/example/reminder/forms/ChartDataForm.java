@@ -2,6 +2,9 @@ package com.example.reminder.forms;
 
 import java.util.Collection;
 
+/**
+ * Class containing data for chart
+ */
 public class ChartDataForm {
   private Collection<Column> cols;
   private Collection<Row> rows;
