@@ -17,33 +17,23 @@
       // draws it.
       function drawChart() {
 
-        // Create the data table.
-        var data = new google.visualization.DataTable();
-
         var oTable = document.getElementById('datagrid');
-        data.addColumn('string', oTable.rows.item(0).cells.item(2).innerHTML);
-        data.addColumn('number', oTable.rows.item(0).cells.item(0).innerHTML);
-        var rowsNumber = oTable.rows.length;
-        var dataRows = [];
+        var date = oTable.rows.item(1).cells.item(1).innerHTML;
+        var parsedDate = Date.parse(date);
         
-        for (var i = 1, row; row = oTable.rows[i]; i++) {
-        	var cells = row.cells;
-        	var cellNumber = cells.length;
-        	
-        	var dataRow = [cells.item(2).innerHTML, parseFloat(cells.item(0).innerHTML)];
-        	console.log(dataRow);
-        	
-        	data.addRow(dataRow);
-        }
+        var jsonData = $.ajax({
+        	type: "POST",
+            url: "/chartdata",
+            data: {date: parsedDate},
+            dataType: "json",
+            async: false
+            }).responseText;
 
-        // Set chart options
-        var options = {'title':'Household Expenses',
-                       'width':800,
-                       'height':400};
+        var data = new google.visualization.DataTable(jsonData);
 
-        // Instantiate and draw our chart, passing in some options.
+        // Instantiate and draw the chart, passing in some options.
         var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-        chart.draw(data, options);
+        chart.draw(data, {width: 600, height: 400});
         
       }
     </script>

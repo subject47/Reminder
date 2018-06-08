@@ -4,7 +4,6 @@ import java.time.Month;
 import java.time.Year;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,8 +19,6 @@ import com.example.reminder.services.ExpenseService;
 @Controller
 public class ExpenseController {
 
-  private static final Logger logger = Logger.getLogger(ExpenseController.class);
-
   @Autowired
   private ExpenseService expenseService;
 
@@ -36,16 +33,10 @@ public class ExpenseController {
 
   @RequestMapping(value = "/dateSelected", method = RequestMethod.POST)
   public String dateSelected(DateForm dateform, Model model) {
-    logger.info("Selected year: " + dateform.getYear() + "; Selected month: "
-        + Month.of(dateform.getMonth()));
-
     List<Expense> expenses = expenseService
         .findAllExpensesForYearAndMonth(Year.of(dateform.getYear()), Month.of(dateform.getMonth()))
         .stream().sorted((e1, e2) -> e1.getDate().compareTo(e2.getDate()))
         .collect(Collectors.toList());
-
-    expenses.stream().forEach(System.out::println);
-
     model.addAttribute("expenses", expenses);
     return "expenseList";
   }
