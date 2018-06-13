@@ -1,9 +1,9 @@
 package com.example.reminder.bootstrap;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.Month;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.util.Date;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +20,7 @@ import com.example.reminder.services.CategoryService;
 import com.example.reminder.services.ExpenseService;
 import com.example.reminder.services.RoleService;
 import com.example.reminder.services.UserService;
+import com.example.reminder.utils.DateUtils;
 
 @Component
 public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedEvent> {
@@ -139,70 +140,38 @@ public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedE
 
   private void loadExpenses() {
     Category category1 = categoryService.findByName("Food");
-
-    Calendar cal1 = GregorianCalendar.getInstance();
-    cal1.set(2018, Month.MAY.getValue() - 1, 1);
-    Expense expense1 = new Expense();
-    expense1.setAmount(2000.0);
-    expense1.setDate(cal1.getTime());
-    expense1.setDescription("Milk");
-    expense1.setCategory(category1);
+    Date date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1));
+    Expense expense1 = new Expense(2000.0, date, "Milk", category1);
     expenseService.save(expense1);
 
-    cal1.set(2018, Month.MAY.getValue() - 1, 31);
+    date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 12));
     Category category2 = categoryService.findByName("Food");
-    Expense expense2 = new Expense();
-    expense2.setAmount(6000.0);
-    expense2.setDate(cal1.getTime());
-    expense2.setDescription("Meat");
-    expense2.setCategory(category2);
+    Expense expense2 = new Expense(6000.0, date, "Meat", category2);
     expenseService.save(expense2);
 
-    cal1.set(2018, Month.MAY.getValue() - 1, 31);
+    date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 20));
     Category category3 = categoryService.findByName("Food");
-    Expense expense3 = new Expense();
-    expense3.setAmount(3000.0);
-    expense3.setDate(cal1.getTime());
-    expense3.setDescription("Bread");
-    expense3.setCategory(category3);
+    Expense expense3 = new Expense(3000.0, date, "Bread", category3);
     expenseService.save(expense3);
 
-    cal1.set(2018, Month.MAY.getValue() - 1, 31);
+    date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 31));
     Category category4 = categoryService.findByName("Electronics");
-    Expense expense4 = new Expense();
-    expense4.setAmount(6000.0);
-    expense4.setDate(cal1.getTime());
-    expense4.setDescription("TV");
-    expense4.setCategory(category4);
+    Expense expense4 = new Expense(6000.0, date, "TV", category4);
     expenseService.save(expense4);
 
-    cal1.set(2018, Month.MAY.getValue() - 1, 31);
+    date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 31));
     Category category5 = categoryService.findByName("Medicine");
-    Expense expense5 = new Expense();
-    expense5.setAmount(1500.0);
-    expense5.setDate(cal1.getTime());
-    expense5.setDescription("Pills");
-    expense5.setCategory(category5);
+    Expense expense5 = new Expense(1500.0, date, "Pills", category5);
     expenseService.save(expense5);
 
-
-
-    cal1.set(2018, Month.JUNE.getValue() - 1, 1);
+    date = DateUtils.asDate(LocalDate.of(2018, Month.JUNE, 1));
     Category category6 = categoryService.findByName("Medicine");
-    Expense expense6 = new Expense();
-    expense6.setAmount(500.0);
-    expense6.setDate(cal1.getTime());
-    expense6.setDescription("Expense 3 description");
-    expense6.setCategory(category6);
+    Expense expense6 = new Expense(500.0, date, "Expense 3 description", category6);
     expenseService.save(expense6);
 
-    cal1.set(2018, Month.APRIL.getValue() - 1, 30);
+    date = DateUtils.asDate(LocalDate.of(2018, Month.APRIL, 30));
     Category category7 = categoryService.findByName("Utilities");
-    Expense expense7 = new Expense();
-    expense7.setAmount(7500.0);
-    expense7.setDate(cal1.getTime());
-    expense7.setDescription("Expense 4 description");
-    expense7.setCategory(category7);
+    Expense expense7 = new Expense(7500.0, date, "Expense 4 description", category7);
     expenseService.save(expense7);
   }
 

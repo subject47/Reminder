@@ -3,9 +3,7 @@ package com.example.reminder.repositories;
 import static com.google.common.truth.Truth.assertThat;
 import java.time.LocalDate;
 import java.time.Month;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +35,7 @@ public class ExpenseRepositoryTest {
 
   @Before
   public void setUp() {
-    loadExpenses();
+    loadData();
   }
 
   @Test
@@ -51,38 +49,36 @@ public class ExpenseRepositoryTest {
     assertThat(expenses).containsAllIn(expensesForMay);
   }
 
-  private void loadExpenses() {
+  private void loadData() {
     loadCategories();
 
     expensesForMay = Lists.newArrayList();
     expensesForApril = Lists.newArrayList();
     expensesForJune = Lists.newArrayList();
 
-    Calendar calendar = GregorianCalendar.getInstance();
-
-    calendar.set(2018, Month.MAY.getValue() - 1, 1);
     Category category1 = categoryRepository.findByName("Food");
-    Expense expense1 = new Expense(2000.0, calendar.getTime(), "Milk", category1);
+    Date date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1));
+    Expense expense1 = new Expense(2000.0, date, "Milk", category1);
     expensesForMay.add(expense1);
 
-    calendar.set(2018, Month.MAY.getValue() - 1, 15);
+    date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 15));
     Category category2 = categoryRepository.findByName("Food");
-    Expense expense2 = new Expense(6000.0, calendar.getTime(), "Meat", category2);
+    Expense expense2 = new Expense(6000.0, date, "Meat", category2);
     expensesForMay.add(expense2);
 
-    calendar.set(2018, Month.MAY.getValue() - 1, 31);
+    date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 31));
     Category category3 = categoryRepository.findByName("Food");
-    Expense expense3 = new Expense(3000.0, calendar.getTime(), "Bread", category3);
+    Expense expense3 = new Expense(3000.0, date, "Bread", category3);
     expensesForMay.add(expense3);
 
-    calendar.set(2018, Month.JUNE.getValue() - 1, 1);
+    date = DateUtils.asDate(LocalDate.of(2018, Month.JUNE, 1));
     Category category4 = categoryRepository.findByName("Medicine");
-    Expense expense4 = new Expense(500.0, calendar.getTime(), "Expense 3 description", category4);
+    Expense expense4 = new Expense(500.0, date, "Expense 3 description", category4);
     expensesForJune.add(expense4);
 
-    calendar.set(2018, Month.APRIL.getValue() - 1, 30);
+    date = DateUtils.asDate(LocalDate.of(2018, Month.APRIL, 30));
     Category category5 = categoryRepository.findByName("Utilities");
-    Expense expense5 = new Expense(7500.0, calendar.getTime(), "Expense 4 description", category5);
+    Expense expense5 = new Expense(7500.0, date, "Expense 4 description", category5);
     expensesForApril.add(expense5);
 
     entityManager.persist(expense1);
@@ -102,7 +98,6 @@ public class ExpenseRepositoryTest {
     entityManager.persist(category2);
     entityManager.persist(category3);
     entityManager.persist(category4);
-    entityManager.flush();
   }
 
 }

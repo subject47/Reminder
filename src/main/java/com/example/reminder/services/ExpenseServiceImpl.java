@@ -45,7 +45,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   @Override
   public List<Expense> findAllExpensesForYearAndMonth(Year year, Month month) {
     LocalDate start = LocalDate.of(year.getValue(), month, 1);
-    LocalDate end = start.plusMonths(1);
+    LocalDate end = start.plusMonths(1).minusDays(1);
     return expenseRepository.findByDateBetween(DateUtils.asDate(start), DateUtils.asDate(end));
   }
 

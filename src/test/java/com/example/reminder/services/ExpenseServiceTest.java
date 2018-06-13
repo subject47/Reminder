@@ -50,7 +50,7 @@ public class ExpenseServiceTest {
   public void findAllExpensesForYearAndMonth_April2018() {
     // given
     Date firstDay = DateUtils.asDate(LocalDate.of(2018, Month.APRIL, 1));
-    Date lastDay = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1));
+    Date lastDay = DateUtils.asDate(LocalDate.of(2018, Month.APRIL, 30));
     when(expenseRepository.findByDateBetween(firstDay, lastDay))
         .thenReturn(Lists.newArrayList(expenseForApril));
     // when
@@ -64,7 +64,7 @@ public class ExpenseServiceTest {
   public void findAllExpensesForYearAndMonth_May2018() {
     // given
     Date firstDay = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1));
-    Date lastDay = DateUtils.asDate(LocalDate.of(2018, Month.JUNE, 1));
+    Date lastDay = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 31));
     when(expenseRepository.findByDateBetween(firstDay, lastDay))
         .thenReturn(Lists.newArrayList(expenseForMay));
     // when
@@ -78,7 +78,7 @@ public class ExpenseServiceTest {
   public void findAllExpensesForYearAndMonth_June2018() {
     // given
     Date firstDay = DateUtils.asDate(LocalDate.of(2018, Month.JUNE, 1));
-    Date lastDay = DateUtils.asDate(LocalDate.of(2018, Month.JULY, 1));
+    Date lastDay = DateUtils.asDate(LocalDate.of(2018, Month.JUNE, 30));
     when(expenseRepository.findByDateBetween(firstDay, lastDay))
         .thenReturn(Lists.newArrayList(expenseForJune));
     // when
