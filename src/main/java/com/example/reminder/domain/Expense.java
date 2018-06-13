@@ -7,6 +7,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import org.springframework.format.annotation.DateTimeFormat;
 import com.example.reminder.utils.DateUtils;
+import com.google.common.base.Objects;
 
 @Entity
 public class Expense extends AbstractDomainClass {
@@ -21,6 +22,15 @@ public class Expense extends AbstractDomainClass {
   @OneToOne
   private Category category;
   private String description;
+
+  public Expense() {}
+
+  public Expense(Double amount, Date date, String description, Category category) {
+    this.amount = amount;
+    this.date = date;
+    this.description = description;
+    this.category = category;
+  }
 
   public User getUser() {
     return user;
@@ -66,6 +76,28 @@ public class Expense extends AbstractDomainClass {
   public String toString() {
     return String.format("Expense: %,.2f | %s | %s", amount,
         FORMATTER.format(DateUtils.asLocalDate(date)), category);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(amount, date, description, category);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) {
+      return false;
+    }
+    if (!(o instanceof Expense)) {
+      return false;
+    }
+    if (this == o) {
+      return true;
+    }
+    Expense other = (Expense) o;
+    return Objects.equal(amount, other.getAmount()) && Objects.equal(date, other.getDate())
+        && Objects.equal(description, other.getDescription())
+        && Objects.equal(category, other.getCategory());
   }
 
 }

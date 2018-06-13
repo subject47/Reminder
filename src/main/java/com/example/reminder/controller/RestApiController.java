@@ -56,8 +56,9 @@ public class RestApiController {
         expenseService.findAllExpensesForYearAndMonth(Year.of(date.getYear()), date.getMonth());
     expenses = groupeExpensesByCategory(expenses);
 
-    Collection<ChartDataForm.Column> columns = Lists.newArrayList(
-        new ChartDataForm.Column("Category", "string"), new ChartDataForm.Column("Amount", "number"));
+    Collection<ChartDataForm.Column> columns =
+        Lists.newArrayList(new ChartDataForm.Column("Category", "string"),
+            new ChartDataForm.Column("Amount", "number"));
     Collection<ChartDataForm.Row> rows = Lists.newArrayList();
 
     expenses.stream().forEach(expense -> {
@@ -67,9 +68,7 @@ public class RestApiController {
       ChartDataForm.Row row = new ChartDataForm.Row(Lists.newArrayList(dataLabel, dataNumber));
       rows.add(row);
     });
-
-    ChartDataForm data = new ChartDataForm(columns, rows);
-    return data;
+    return new ChartDataForm(columns, rows);
   }
 
 
