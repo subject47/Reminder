@@ -16,6 +16,11 @@ public class Category extends AbstractDomainClass {
     this.description = description;
   }
 
+  public Category(int id, String name, String description) {
+    this(name, description);
+    this.id = id;
+  }
+
   public String getName() {
     return name;
   }
