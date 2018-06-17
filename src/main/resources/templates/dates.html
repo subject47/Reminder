@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
-<title>Title goes here...</title>
+<title>Date Selector</title>
+<!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
 </head>
 <body>
+	<div class="container">
+	    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+	</div>
 	<h4>Select a date range</h4>
 	<form action="#" th:action="@{/dateSelected}" th:object="${dateform}"
 		method="post">
@@ -16,8 +20,7 @@
 		</div>
 		<div class="form-group">
 			<label for="month">Month:</label> 
-			<select th:field="*{month}"
-				id="month">
+			<select th:field="*{month}"	id="month">
 				<option th:each="key:${dateform.months.keySet()}" th:value="${key}"
 					th:utext="${dateform.months.get(key)}" />
 			</select> <input type="submit" />

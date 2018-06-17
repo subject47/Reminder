@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Expense List</title>
+<!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
+
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      // Load the Visualization API and the corechart package.
+      google.charts.load('current', {'packages':['corechart']});
+
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback(drawChart);
+
+      // Callback that creates and populates a data table,
+      // instantiates the pie chart, passes in the data and
+      // draws it.
+      function drawChart() {
+
+        var oTable = document.getElementById('datagrid');
+        var date = oTable.rows.item(1).cells.item(1).innerHTML;
+        var parsedDate = Date.parse(date);
+        
+        var jsonData = $.ajax({
+        	type: "POST",
+            url: "/chartdata",
+            data: {date: parsedDate},
+            dataType: "json",
+            async: false
+            }).responseText;
+
+        var data = new google.visualization.DataTable(jsonData);
+
+        // Instantiate and draw the chart, passing in some options.
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, {width: 600, height: 400});
+        
+      }
+    </script>
+
+
+</head>
+<body>
+	<div class="container">
+	    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+	</div>
+	<div class="container">
+		<div id="chart_div"></div>
+	</div>
+	<div class="container">
+		<div th:if="${not #lists.isEmpty(expenses)}">
+			<h2>Expenses</h2>
+		</div>
+		<table id="datagrid" class="table table-striped">
+			<tr>
+				<th>Amount</th>
+				<th>Date</th>
+				<th>Category</th>
+				<th>Description</th>
+			</tr>
+			<tr th:each="expense:${expenses}">
+				<td th:text="${expense.amount}"></td>
+				<td th:text="${#dates.format(expense.date, 'MMM dd, yyyy')}"></td>
+				<td th:text="${expense.category.name}"></td>
+				<td th:text="${expense.description}"></td>
+			</tr>
+		</table>
+	</div>
+</body>
+</html>
