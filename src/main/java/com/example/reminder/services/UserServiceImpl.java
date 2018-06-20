@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Profile("springdatajpa")
 public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;

@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Profile("springdatajpa")
 public class RoleServiceImpl implements RoleService {
 
     private RoleRepository roleRepository;

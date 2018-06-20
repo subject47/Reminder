@@ -60,6 +60,10 @@ public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedE
 
   @Override
   public void onApplicationEvent(ContextRefreshedEvent event) {
+//	  loadDummyData();
+  }
+  
+  private void loadDummyData() {
     loadProducts();
     loadUsers();
     loadRoles();
