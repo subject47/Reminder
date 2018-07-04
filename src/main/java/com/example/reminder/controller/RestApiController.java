@@ -30,7 +30,6 @@ public class RestApiController {
   private CategoryService categoryService;
 
 
-  @SuppressWarnings("unchecked")
   @RequestMapping(value = "/allexpenses", method = RequestMethod.GET)
   public List<Expense> listAllExpenses() {
     List<Expense> expenses = (List<Expense>) expenseService.listAll();
@@ -82,6 +81,7 @@ public class RestApiController {
   private List<Expense> groupeExpensesByCategory(List<Expense> expenses) {
     Map<Integer, List<Expense>> expensesByCategory =
         expenses.stream().collect(Collectors.groupingBy(e -> e.getCategory().getId()));
+    
     List<Expense> groupedExpenses = Lists.newArrayList();
     for (Map.Entry<Integer, List<Expense>> entry : expensesByCategory.entrySet()) {
       Expense groupExpense = null;

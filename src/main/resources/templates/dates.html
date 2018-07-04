@@ -4,28 +4,41 @@
 <title>Date Selector</title>
 <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
 </head>
+
 <body>
+
+	<script type="text/javascript">
+	/* <![CDATA[ */
+		function onSubmit() {
+			var year = $("#year2").val();
+			var month = $("#month2").val();
+			window.location.replace("/expenses" + "?year=" + year + "&month=" + month);
+		}
+	/* ]]> */
+	</script>
+
 	<div class="container">
 	    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
 	</div>
 	<h4>Select a date range</h4>
-	<form action="#" th:action="@{/dateSelected}" th:object="${dateform}"
-		method="post">
-		<div class="form-group">
-			<label for="year">Year:</label>
-			<select th:field="*{year}" id="year">
-				<option th:each="year:${dateform.years}" th:value="${year}"
-					th:utext="${year}" />
-			</select>
-		</div>
-		<div class="form-group">
-			<label for="month">Month:</label> 
-			<select th:field="*{month}"	id="month">
-				<option th:each="key:${dateform.months.keySet()}" th:value="${key}"
-					th:utext="${dateform.months.get(key)}" />
-			</select> <input type="submit" />
-		</div>
-	</form>
+
+	<div>
+		<label for="year">Year:</label>
+		<select th:field="*{year}" id="year2">
+			<option th:each="year:${years}" th:value="${year}"
+				th:utext="${year}" />
+		</select>
+	</div>
+	<div>
+		<label for="month">Month:</label> 
+		<select th:field="*{month}"	id="month2">
+			<option th:each="key:${months.keySet()}" th:value="${key}"
+				th:utext="${months.get(key)}" />
+		</select>
+	</div>
+	<div>
+		<button onclick="onSubmit()">Submit</button>
+	</div>
 
 </body>
 </html>

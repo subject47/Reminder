@@ -30,7 +30,7 @@ public class ExpenseControllerTest {
   @Test
   public void dates() throws Exception {
     mvc.perform(get("/dates")).andDo(print()).andExpect(status().isOk())
-        .andExpect(model().attributeExists("dateform"));
+        .andExpect(model().attributeExists("years")).andExpect(model().attributeExists("months"));
   }
 
 }
