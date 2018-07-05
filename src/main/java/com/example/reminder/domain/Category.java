@@ -44,7 +44,7 @@ public class Category extends AbstractDomainClass {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(name, description);
+    return (this.id == null) ? Objects.hashCode(name, description) : this.id;
   }
 
   @Override
@@ -59,8 +59,10 @@ public class Category extends AbstractDomainClass {
       return true;
     }
     Category other = (Category) o;
+    if (this.id != null && this.id.equals(other.getId())) {
+    	return true;
+    }
     return Objects.equal(name, other.getName())
         && Objects.equal(description, other.getDescription());
   }
-
 }

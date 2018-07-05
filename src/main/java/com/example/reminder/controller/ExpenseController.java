@@ -54,7 +54,7 @@ public class ExpenseController {
     model.addAttribute("months", MONTHS);
     model.addAttribute("year", 1);
     model.addAttribute("month", 1);
-    return "dates";
+    return "datesSelector";
   }
   
   @RequestMapping(value = "/expenses", method = RequestMethod.GET)
@@ -67,7 +67,7 @@ public class ExpenseController {
     return "expenseList";
   }
 
-  @RequestMapping(value = "/expense/new")
+  @RequestMapping(value = "/expense/new", method = RequestMethod.GET)
   public String newExpense(Model model) {
     List<Category> categories = categoryService.listAll();
     ExpenseForm form = new ExpenseForm(categories);
@@ -75,7 +75,7 @@ public class ExpenseController {
     return "expenseForm";
   }
   
-  @RequestMapping(value = "/expense/edit")
+  @RequestMapping(value = "/expense/edit", method = RequestMethod.GET)
   public String editExpense(@RequestParam Integer id, Model model) {
     List<Category> categories = categoryService.listAll();
     Expense expense = expenseService.getById(id);
@@ -84,7 +84,7 @@ public class ExpenseController {
     return "expenseForm";
   }
 
-  @RequestMapping(value = "/expense")
+  @RequestMapping(value = "/expense", method = RequestMethod.POST)
   public String expense(ExpenseForm expenseForm) {
     int categoryId = expenseForm.getCategoryId();
     Category category = categoryService.getById(categoryId);
