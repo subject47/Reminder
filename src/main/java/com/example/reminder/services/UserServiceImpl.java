@@ -39,11 +39,12 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User save(User domainObject) {
-		if (domainObject.getPassword() != null) {
-			domainObject.setEncryptedPassword(encryptionService.encryptString(domainObject.getPassword()));
+	public User save(User user) {
+		if (user.getPassword() != null) {
+		//	user.setEncryptedPassword(encryptionService.encryptString(user.getPassword()));
+			user.setEncryptedPassword(user.getPassword());
 		}
-		return userRepository.save(domainObject);
+		return userRepository.save(user);
 	}
 
 	@Override
