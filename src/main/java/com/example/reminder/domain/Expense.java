@@ -80,7 +80,7 @@ public class Expense extends AbstractDomainClass {
 
   @Override
   public int hashCode() {
-    return Objects.hashCode(amount, date, description, category);
+    return (this.id == null) ? Objects.hashCode(amount, date, description, category) : this.id;
   }
 
   @Override
@@ -95,6 +95,9 @@ public class Expense extends AbstractDomainClass {
       return true;
     }
     Expense other = (Expense) o;
+    if (this.id != null && this.id.equals(other.getId())) {
+    	return true;
+    }
     return Objects.equal(amount, other.getAmount()) && Objects.equal(date, other.getDate())
         && Objects.equal(description, other.getDescription())
         && Objects.equal(category, other.getCategory());

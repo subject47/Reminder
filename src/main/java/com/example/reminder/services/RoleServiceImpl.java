@@ -1,7 +1,6 @@
 package com.example.reminder.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 import com.example.reminder.domain.Role;
@@ -11,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Profile("springdatajpa")
 public class RoleServiceImpl implements RoleService {
 
     private RoleRepository roleRepository;
@@ -22,7 +20,7 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public List<?> listAll() {
+    public List<Role> listAll() {
         List<Role> roles = new ArrayList<>();
         roleRepository.findAll().forEach(roles::add);
         return roles;

@@ -6,6 +6,11 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
+/**
+ * Date utility class
+ * 
+ * <p>Converts java.util.Date to java.time.LocalDate/java.time.LocalDateTime and vice versa
+ */
 public class DateUtils {
 
   public static Date asDate(LocalDate localDate) {

@@ -30,7 +30,6 @@ public class RestApiController {
   private CategoryService categoryService;
 
 
-  @SuppressWarnings("unchecked")
   @RequestMapping(value = "/allexpenses", method = RequestMethod.GET)
   public List<Expense> listAllExpenses() {
     List<Expense> expenses = (List<Expense>) expenseService.listAll();
@@ -44,7 +43,7 @@ public class RestApiController {
 
   @RequestMapping(value = "/expensesbycategory", method = RequestMethod.GET)
   public List<Expense> listAllExpensesGroupedByCategory() {
-    return groupeExpensesByCategory(listAllExpenses());
+    return groupExpensesByCategory(listAllExpenses());
   }
 
 
@@ -54,7 +53,7 @@ public class RestApiController {
         .toLocalDate();
     List<Expense> expenses =
         expenseService.findAllExpensesForYearAndMonth(Year.of(date.getYear()), date.getMonth());
-    expenses = groupeExpensesByCategory(expenses);
+    expenses = groupExpensesByCategory(expenses);
 
     Collection<ChartDataForm.Column> columns =
         Lists.newArrayList(new ChartDataForm.Column("Category", "string"),
@@ -79,9 +78,10 @@ public class RestApiController {
   }
 
 
-  private List<Expense> groupeExpensesByCategory(List<Expense> expenses) {
+  private List<Expense> groupExpensesByCategory(List<Expense> expenses) {
     Map<Integer, List<Expense>> expensesByCategory =
         expenses.stream().collect(Collectors.groupingBy(e -> e.getCategory().getId()));
+    
     List<Expense> groupedExpenses = Lists.newArrayList();
     for (Map.Entry<Integer, List<Expense>> entry : expensesByCategory.entrySet()) {
       Expense groupExpense = null;

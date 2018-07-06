@@ -3,6 +3,7 @@ package com.example.reminder.forms;
 import java.util.List;
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
+import com.google.common.base.Objects;
 
 public class ExpenseForm {
 
@@ -45,6 +46,39 @@ public class ExpenseForm {
 
   public void setCategoryId(int categoryId) {
     this.categoryId = categoryId;
+  }
+  
+  @Override
+  public int hashCode() {
+	  Object[] objects = new Object[categories.size() + 1];
+	  for (int i = 0; i < categories.size(); i++) {
+		  objects[i] = categories.get(i);
+	  }
+	  objects[categories.size()] = expense;
+	  return Objects.hashCode(objects);
+  }
+  
+  @Override
+  public boolean equals(Object o) {
+      if (o == null) {
+        return false;
+	  }
+	  if (!(o instanceof ExpenseForm)) {
+	    return false;
+	  }
+	  if (this == o) {
+	    return true;
+	  }
+	  ExpenseForm other = (ExpenseForm) o;
+	  if (categories.size() != other.getCategories().size()) {
+		  return false;
+	  }
+	  for (Category category : categories) {
+		  if (!other.getCategories().contains(category)) {
+			  return false;
+		  }
+	  }	  
+	  return Objects.equal(expense, other.getExpense());
   }
 
 }

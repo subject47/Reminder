@@ -15,8 +15,6 @@ import com.example.reminder.utils.DateUtils;
 @Service
 public class ExpenseServiceImpl implements ExpenseService {
 
-  private static final Logger logger = Logger.getLogger(ExpenseServiceImpl.class);
-
   private ExpenseRepository expenseRepository;
 
   @Autowired
@@ -24,7 +22,7 @@ public class ExpenseServiceImpl implements ExpenseService {
     this.expenseRepository = expenseRepository;
   }
 
-  public List<?> listAll() {
+  public List<Expense> listAll() {
     List<Expense> expenses = new ArrayList<>();
     expenseRepository.findAll().forEach(expenses::add);
     return expenses;
