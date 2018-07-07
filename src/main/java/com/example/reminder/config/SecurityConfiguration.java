@@ -22,7 +22,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private DataSource dataSource;
 	
-/*
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+
 	private AuthenticationProvider authenticationProvider;
 	
 	@Autowired
@@ -49,7 +52,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Autowired
 	public void configureAuthManager(AuthenticationManagerBuilder authenticationManagerBuilder) {
 	    authenticationManagerBuilder.authenticationProvider(authenticationProvider);
-	}*/
+	}
 	
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 	  httpSecurity
@@ -71,7 +74,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     	builder
     		.jdbcAuthentication()
     		.dataSource(dataSource)
-    		.passwordEncoder(NoOpPasswordEncoder.getInstance())
+    		.passwordEncoder(passwordEncoder)
     		.usersByUsernameQuery("select username, encrypted_password, enabled from user where username = ?")
     		.authoritiesByUsernameQuery(
     				"select u.username, r.role from user u "
