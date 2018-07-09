@@ -30,7 +30,7 @@
         var parsedDate = Date.parse(date);
         
         var jsonData = $.ajax({
-        	type: "POST",
+        	type: "GET",
             url: "/chartdata",
             data: {date: parsedDate},
             dataType: "json",

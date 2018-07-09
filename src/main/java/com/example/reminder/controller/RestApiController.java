@@ -47,7 +47,7 @@ public class RestApiController {
   }
 
 
-  @RequestMapping(value = "/chartdata", method = RequestMethod.POST)
+  @RequestMapping(value = "/chartdata", method = RequestMethod.GET)
   public ChartDataForm generateChartData(@RequestParam("date") String timestamp) {
     LocalDate date = Instant.ofEpochMilli(Long.parseLong(timestamp)).atZone(ZoneId.systemDefault())
         .toLocalDate();
