@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
+import com.example.reminder.domain.User;
 import com.example.reminder.forms.ExpenseForm;
 import com.example.reminder.services.CategoryService;
 import com.example.reminder.services.ExpenseService;
@@ -54,6 +55,7 @@ public class ExpenseControllerTest {
   
   @Before
   public void setUp() {
+	  User user = new User("user", "pw");
 	  Category category1 = new Category("Cat1_Name", "Cat1_Description");
 	  category1.setId(1);
 	  Category category2 = new Category("Cat2_Name", "Cat2_Description");
@@ -61,9 +63,11 @@ public class ExpenseControllerTest {
 	  categories = Lists.newArrayList(category1, category2);
 	  LocalDate date1 = LocalDate.of(year, month, 6);
 	  expense = new Expense(2000.0, DateUtils.asDate(date1), "Expense1", category1);
+	  expense.setUser(user);
 	  expense.setId(1);
 	  LocalDate date2 = LocalDate.of(year, month, 8);
 	  Expense expense2 = new Expense(4000.0, DateUtils.asDate(date2), "Expense2", category2);
+	  expense.setUser(user);
 	  expense2.setId(2);
 	  expenses = Lists.newArrayList(expense, expense2);
   }
@@ -78,14 +82,15 @@ public class ExpenseControllerTest {
   }
   
   @Test
+  @WithMockUser("user")
   public void expenses() throws Exception {
-	  when(expenseService.findAllExpensesForYearAndMonth(Year.of(year), Month.of(month))).thenReturn(expenses);
+	  when(expenseService.findExpensesByYearAndMonthAndUsername(Year.of(year), Month.of(month), "user")).thenReturn(expenses);
 
 	  mvc.perform(get("/expenses?year=2018&month=5"))
 //		  .andDo(print())
 		  .andExpect(status().isOk())
 		  .andExpect(model().attribute("expenses", expenses));
-	  verify(expenseService).findAllExpensesForYearAndMonth(Year.of(year), Month.of(month));
+	  verify(expenseService).findExpensesByYearAndMonthAndUsername(Year.of(year), Month.of(month), "user");
   }
   
 //  @Test

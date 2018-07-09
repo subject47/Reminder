@@ -33,6 +33,13 @@ public class User extends AbstractDomainClass {
 	
 	private Integer failedLoginAttempts = 0;
 
+	public User() {}
+	
+	public User(String username, String password) {
+		this.username = username;
+		this.password = password;
+	}
+	
 	public String getUsername() {
 		return username;
 	}

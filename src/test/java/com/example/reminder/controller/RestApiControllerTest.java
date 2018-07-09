@@ -1,5 +1,6 @@
 package com.example.reminder.controller;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,6 +32,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
+import com.example.reminder.domain.User;
 import com.example.reminder.services.CategoryService;
 import com.example.reminder.services.ExpenseService;
 import com.example.reminder.utils.DateUtils;
@@ -54,23 +56,28 @@ public class RestApiControllerTest {
   @Before
   public void setUp() {
     expenses = Lists.newArrayList();
+    User user = new User("user", "pw");
 
     Date date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1));
-    expenses.add(new Expense(2000.0, date, "Milk", new Category(2, "Food", "Food spendings")));
+    Expense e1 = new Expense(2000.0, date, "Milk", new Category(2, "Food", "Food spendings"));
+    e1.setUser(user);
+    expenses.add(e1);
 
     date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 15));
-    expenses.add(
-        new Expense(1000.0, date, "Condoms", new Category(1, "Medicine", "Medicine spendings")));
+    Expense e2 = new Expense(1000.0, date, "Condoms", new Category(1, "Medicine", "Medicine spendings"));
+    e2.setUser(user);
+    expenses.add(e2);
 
     date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 31));
-    expenses.add(
-        new Expense(3000.0, date, "TV", new Category(3, "Electronics", "Electronics spendings")));
+    Expense e3 = new Expense(3000.0, date, "TV", new Category(3, "Electronics", "Electronics spendings"));
+    e3.setUser(user);
+    expenses.add(e3);
 
   }
 
   @Test
   public void generateChartData() throws Exception {
-    when(expenseService.findAllExpensesForYearAndMonth(Year.of(2018), Month.MAY))
+    when(expenseService.findExpensesByYearAndMonthAndUsername(Year.of(2018), Month.MAY, "user"))
         .thenReturn(expenses);
 
     mvc.perform(get("/chartdata?date=1525122000000")
@@ -79,5 +86,7 @@ public class RestApiControllerTest {
         	.andExpect(status().isOk())
         	.andExpect(content().string(
             "{\"cols\":[{\"id\":\"\",\"label\":\"Category\",\"pattern\":\"\",\"type\":\"string\"},{\"id\":\"\",\"label\":\"Amount\",\"pattern\":\"\",\"type\":\"number\"}],\"rows\":[{\"c\":[{\"v\":\"Medicine\",\"f\":null},{\"v\":1000.0,\"f\":null}]},{\"c\":[{\"v\":\"Food\",\"f\":null},{\"v\":2000.0,\"f\":null}]},{\"c\":[{\"v\":\"Electronics\",\"f\":null},{\"v\":3000.0,\"f\":null}]}]}"));
+   
+    verify(expenseService).findExpensesByYearAndMonthAndUsername(Year.of(2018), Month.MAY, "user");
   }
 }

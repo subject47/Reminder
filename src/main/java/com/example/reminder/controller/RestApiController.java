@@ -9,12 +9,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
+import com.example.reminder.domain.User;
 import com.example.reminder.forms.ChartDataForm;
 import com.example.reminder.services.CategoryService;
 import com.example.reminder.services.ExpenseService;
@@ -48,11 +50,13 @@ public class RestApiController {
 
 
   @RequestMapping(value = "/chartdata", method = RequestMethod.GET)
-  public ChartDataForm generateChartData(@RequestParam("date") String timestamp) {
+  public ChartDataForm generateChartData(@RequestParam("date") String timestamp, Authentication authentication) {
     LocalDate date = Instant.ofEpochMilli(Long.parseLong(timestamp)).atZone(ZoneId.systemDefault())
         .toLocalDate();
     List<Expense> expenses =
-        expenseService.findAllExpensesForYearAndMonth(Year.of(date.getYear()), date.getMonth());
+        expenseService.findExpensesByYearAndMonthAndUsername(
+        		Year.of(date.getYear()), date.getMonth(), authentication.getName());
+
     expenses = groupExpensesByCategory(expenses);
 
     Collection<ChartDataForm.Column> columns =

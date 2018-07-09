@@ -2,9 +2,11 @@ package com.example.reminder.controller;
 
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
+import com.example.reminder.domain.User;
 import com.example.reminder.forms.ExpenseForm;
 import com.example.reminder.services.CategoryService;
 import com.example.reminder.services.ExpenseService;
+import com.example.reminder.services.UserService;
 import com.example.reminder.utils.DateUtils;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -17,6 +19,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,10 +32,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ExpenseController {
 
   @Autowired
+  private UserService userService;
+	
+  @Autowired
   private ExpenseService expenseService;
 
   @Autowired
   private CategoryService categoryService;
+
   
   private static final List<String> YEARS =
 		  Lists.newArrayList("2018", "2019", "2020", "2021", "2022");
@@ -61,11 +70,10 @@ public class ExpenseController {
   }
 
   @RequestMapping(value = "/expenses", method = RequestMethod.GET)
-  public String expenses(@RequestParam Integer year, @RequestParam Integer month, Model model) {
-    List<Expense> expenses = expenseService
-        .findAllExpensesForYearAndMonth(Year.of(year), Month.of(month))
-        .stream().sorted((e1, e2) -> e1.getDate().compareTo(e2.getDate()))
-        .collect(Collectors.toList());
+  public String expenses(@RequestParam Integer year, @RequestParam Integer month, Model model, Authentication authentication) {	  
+	List<Expense> expenses = 
+			expenseService.findExpensesByYearAndMonthAndUsername(
+					Year.of(year), Month.of(month), authentication.getName());
     model.addAttribute("expenses", expenses);
     return "expenseList";
   }
@@ -88,10 +96,11 @@ public class ExpenseController {
   }
 
   @RequestMapping(value = "/expense", method = RequestMethod.POST)
-  public String expense(ExpenseForm expenseForm) {
+  public String expense(ExpenseForm expenseForm, Authentication authentication) {
     int categoryId = expenseForm.getCategoryId();
     Category category = categoryService.getById(categoryId);
     Expense expense = expenseForm.getExpense();
+    expense.setUser(userService.findByUsername(authentication.getName()));
     expense.setCategory(category);
     expenseService.save(expense);
     LocalDate localDate = DateUtils.asLocalDate(expense.getDate());
