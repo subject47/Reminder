@@ -5,8 +5,11 @@ import com.example.reminder.domain.Expense;
 import com.example.reminder.forms.ExpenseForm;
 import com.example.reminder.services.CategoryService;
 import com.example.reminder.services.ExpenseService;
+import com.example.reminder.utils.DateUtils;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+
+import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.HashMap;
@@ -56,7 +59,7 @@ public class ExpenseController {
     model.addAttribute("month", 1);
     return "datesSelector";
   }
-  
+
   @RequestMapping(value = "/expenses", method = RequestMethod.GET)
   public String expenses(@RequestParam Integer year, @RequestParam Integer month, Model model) {
     List<Expense> expenses = expenseService
@@ -74,7 +77,7 @@ public class ExpenseController {
     model.addAttribute("expenseForm", form);
     return "expenseForm";
   }
-  
+
   @RequestMapping(value = "/expense/edit", method = RequestMethod.GET)
   public String editExpense(@RequestParam Integer id, Model model) {
     List<Category> categories = categoryService.listAll();
@@ -91,7 +94,8 @@ public class ExpenseController {
     Expense expense = expenseForm.getExpense();
     expense.setCategory(category);
     expenseService.save(expense);
-    return "index";
+    LocalDate localDate = DateUtils.asLocalDate(expense.getDate());
+    return "redirect:/expenses?year=" + localDate.getYear() + "&month=" + localDate.getMonth().getValue();
   }
 
 }
