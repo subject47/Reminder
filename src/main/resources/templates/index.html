@@ -2,7 +2,7 @@
 <html>
 <head lang="en">
 
-    <title>Spring Framework Guru</title>
+    <title>Budget</title>
 
     <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
 </head>
@@ -11,5 +11,18 @@
 <div class="container">
     <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
 </div>
+
+<div class="welcome" sec:authorize="isAuthenticated()">
+	<h2>
+    	Welcome <span sec:authentication="name"/>
+    </h2>
+</div>
+
+<div class="welcome" sec:authorize="isAnonymous()">
+	<h2>
+    	Hello. Please sign in to start using the application
+    </h2>
+</div>
+
 </body>
 </html>

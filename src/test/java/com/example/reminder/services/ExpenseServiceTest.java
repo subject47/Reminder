@@ -55,7 +55,7 @@ public class ExpenseServiceTest {
         .thenReturn(Lists.newArrayList(expenseForApril));
     // when
     List<Expense> expenses =
-        expenseService.findAllExpensesForYearAndMonth(Year.of(2018), Month.APRIL);
+        expenseService.findAllExpensesByYearAndMonth(Year.of(2018), Month.APRIL);
     // then
     assertThat(expenses).containsExactly(expenseForApril);
   }
@@ -69,7 +69,7 @@ public class ExpenseServiceTest {
         .thenReturn(Lists.newArrayList(expenseForMay));
     // when
     List<Expense> expenses =
-        expenseService.findAllExpensesForYearAndMonth(Year.of(2018), Month.MAY);
+        expenseService.findAllExpensesByYearAndMonth(Year.of(2018), Month.MAY);
     // then
     assertThat(expenses).containsExactly(expenseForMay);
   }
@@ -83,7 +83,7 @@ public class ExpenseServiceTest {
         .thenReturn(Lists.newArrayList(expenseForJune));
     // when
     List<Expense> expenses =
-        expenseService.findAllExpensesForYearAndMonth(Year.of(2018), Month.JUNE);
+        expenseService.findAllExpensesByYearAndMonth(Year.of(2018), Month.JUNE);
     // then
     assertThat(expenses).containsExactly(expenseForJune);
   }

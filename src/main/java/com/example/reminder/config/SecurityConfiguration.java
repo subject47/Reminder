@@ -1,5 +1,7 @@
 package com.example.reminder.config;
 
+import javax.sql.DataSource;
+
 import org.jasypt.springsecurity3.authentication.encoding.PasswordEncoder;
 import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +14,18 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-/*
+	
+	@Autowired
+	private DataSource dataSource;
+	
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+	
+
 	private AuthenticationProvider authenticationProvider;
 	
 	@Autowired
@@ -43,31 +53,34 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public void configureAuthManager(AuthenticationManagerBuilder authenticationManagerBuilder) {
 	    authenticationManagerBuilder.authenticationProvider(authenticationProvider);
 	}
-	*/
+	
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
-//		httpSecurity
-//		.authorizeRequests().antMatchers("/","/products","/product/show/*","/console/**").permitAll()
-//        .anyRequest().authenticated()
-//        .and()
-//        .formLogin().loginPage("/login").permitAll()
-//        .and()
-//        .logout().permitAll();
+	  httpSecurity
+		  .authorizeRequests()
+		      .antMatchers("/", "/registration", "/products","/product/show/*","/console/**").permitAll()
+	      .anyRequest().authenticated()
+	      .and().formLogin().loginPage("/login").permitAll()
+	      .and().logout().permitAll();
 
-		httpSecurity.csrf().disable();  // Is necessary for H2 DB access
+//		httpSecurity.csrf().disable();  // Is necessary for H2 DB access
 		httpSecurity.headers().frameOptions().disable();
 	}
 	
 	
 	
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth
-		.inMemoryAuthentication()
-			.withUser("admin").password("admin").roles("ADMIN")
-		.and()
-			.withUser("user").password("user").roles("USER");
-		
-		
+    @Override
+    public void configure(AuthenticationManagerBuilder builder) throws Exception {
+    	builder
+    		.jdbcAuthentication()
+    		.dataSource(dataSource)
+    		.passwordEncoder(passwordEncoder)
+    		.usersByUsernameQuery("select username, encrypted_password, enabled from user where username = ?")
+    		.authoritiesByUsernameQuery(
+    				"select u.username, r.role from user u "
+    				+ "inner join user_roles ur on u.id = ur.user_id "
+    				+ "inner join role r on ur.roles_id = r.id "
+    				+ "where u.username = ?");
     }
     
 }

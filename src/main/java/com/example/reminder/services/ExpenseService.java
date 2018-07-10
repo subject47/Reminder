@@ -7,5 +7,7 @@ import java.util.List;
 import com.example.reminder.domain.Expense;
 
 public interface ExpenseService extends CRUDService<Expense> {
-	List<Expense> findAllExpensesForYearAndMonth(Year year, Month month);
+	List<Expense> findAllExpensesByYearAndMonth(Year year, Month month);
+	
+	List<Expense> findExpensesByYearAndMonthAndUsername(Year year, Month month, String username);
 }

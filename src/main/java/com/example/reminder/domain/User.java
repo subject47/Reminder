@@ -17,6 +17,9 @@ public class User extends AbstractDomainClass {
 
 	@Transient
 	private String password;
+	
+	@Transient
+	private String repeatPassword;
 
 	private String encryptedPassword;
 	private Boolean enabled = true;
@@ -33,6 +36,13 @@ public class User extends AbstractDomainClass {
 	
 	private Integer failedLoginAttempts = 0;
 
+	public User() {}
+	
+	public User(String username, String password) {
+		this.username = username;
+		this.password = password;
+	}
+	
 	public String getUsername() {
 		return username;
 	}
@@ -47,6 +57,14 @@ public class User extends AbstractDomainClass {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getRepeatPassword() {
+		return repeatPassword;
+	}
+
+	public void setRepeatPassword(String repeatPassword) {
+		this.repeatPassword = repeatPassword;
 	}
 
 	public String getEncryptedPassword() {

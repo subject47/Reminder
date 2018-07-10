@@ -5,10 +5,13 @@ import java.time.Month;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.example.reminder.domain.Expense;
+import com.example.reminder.domain.User;
 import com.example.reminder.repositories.ExpenseRepository;
 import com.example.reminder.utils.DateUtils;
 
@@ -41,10 +44,19 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   @Override
-  public List<Expense> findAllExpensesForYearAndMonth(Year year, Month month) {
+  public List<Expense> findAllExpensesByYearAndMonth(Year year, Month month) {
     LocalDate start = LocalDate.of(year.getValue(), month, 1);
     LocalDate end = start.plusMonths(1).minusDays(1);
     return expenseRepository.findByDateBetween(DateUtils.asDate(start), DateUtils.asDate(end));
+  }
+  
+  @Override
+  public List<Expense> findExpensesByYearAndMonthAndUsername(Year year, Month month, String username) {
+	  return findAllExpensesByYearAndMonth(year, month)
+	      .stream()
+	      .filter(e -> e.getUser().getUsername().equals(username))
+	      .sorted((e1, e2) -> e1.getDate().compareTo(e2.getDate()))
+	      .collect(Collectors.toList());
   }
 
 }
