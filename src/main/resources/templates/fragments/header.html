@@ -12,34 +12,38 @@
                 <div class="navbar-header">
                     <a class="navbar-brand" href="#" th:href="@{/}">Home</a>
                     <ul class="nav navbar-nav">
-                        <li><a href="#" th:href="@{/products}">Products</a></li>
+                        <li><a href="#" th:href="@{/products}" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">Products</a></li>
                         <li><a href="#" th:href="@{/product/new}" sec:authorize="hasAuthority('ADMIN')">Create Product</a></li>
-                        <li><a href="#" th:href="@{/login}">Sign In</a></li>
-                        <li><a href="#" th:href="@{/dates}">Select Date Range</a></li>
-                        <li><a href="#" th:href="@{/expense/new}">Create Expense</a></li>
-                        <li><a href="#" th:href="@{/allexpenses}">All Expenses</a></li>
-                        <li><a href="#" th:href="@{/expensesbycategory}">Grouped Expenses</a></li>
-                        <li><a href="#" th:href="@{/allcategories}">All Categories</a></li>
+                        <li><a href="#" th:href="@{/login}" sec:authorize="isAnonymous()">Sign In</a></li>
+                        <li><a href="#" th:href="@{/dates}" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">Select Date Range</a></li>
+                        <li><a href="#" th:href="@{/expense/new}" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">Create Expense</a></li>
+                        <li><a href="#" th:href="@{/allexpenses}" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">All Expenses</a></li>
+                        <li><a href="#" th:href="@{/expensesbycategory}" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">Grouped Expenses</a></li>
+                        <li><a href="#" th:href="@{/allcategories}" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">All Categories</a></li>
+                        <li sec:authorize="isAuthenticated()">
+	                        <form th:action="@{/logout}" method="post">
+					            <div style="padding-top: 10px;">
+					              	<input type="submit" value="Sign Out" />
+					            </div>
+					        </form>
+                        </li>
                     </ul>
                 </div>
             </div>
         </nav>
-        <div class="welcome">
-            <span sec:authorize="isAuthenticated()">Welcome <span sec:authentication="name"></span></span>
-        </div>
- <!--        <div class="jumbotron">
+         
+<!--          <div>
             <div class="row text-center">
                 <div class="">
-                    <h2>Spring Framework Guru</h2>
+                    <h2>Budget</h2>
 
                     <h3>Spring Boot Web App</h3>
                 </div>
             </div>
             <div class="row text-center">
-                <img src="../../static/images/6.jpg" width="400"
-                     th:src="@{/images/NewBannerBOOTS_2.png}"/>
+                <img width="400" th:src="@{/images/6.jpg}"/>
             </div>
-        </div>  -->
+        </div> -->
     </div>
 </div>
 
