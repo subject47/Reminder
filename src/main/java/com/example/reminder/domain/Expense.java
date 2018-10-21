@@ -48,6 +48,10 @@ public class Expense extends AbstractDomainClass {
     this.amount = amount;
   }
 
+  public void addAmount(Double amount) {
+    this.amount += amount;
+  }
+
   public Date getDate() {
     return date;
   }

@@ -58,18 +58,18 @@ public class RestApiControllerTest {
     expenses = Lists.newArrayList();
     User user = new User("user", "pw");
 
-    Date date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1));
-    Expense e1 = new Expense(2000.0, date, "Milk", new Category(2, "Food", "Food spendings"));
+    Date date1 = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1));
+    Expense e1 = new Expense(2000.0, date1, "Milk", new Category(2, "Food", "Food spendings"));
     e1.setUser(user);
     expenses.add(e1);
 
-    date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 15));
-    Expense e2 = new Expense(1000.0, date, "Condoms", new Category(1, "Medicine", "Medicine spendings"));
+    Date date2 = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 15));
+    Expense e2 = new Expense(1000.0, date2, "Condoms", new Category(1, "Medicine", "Medicine spendings"));
     e2.setUser(user);
     expenses.add(e2);
 
-    date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 31));
-    Expense e3 = new Expense(3000.0, date, "TV", new Category(3, "Electronics", "Electronics spendings"));
+    Date date3 = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 31));
+    Expense e3 = new Expense(3000.0, date3, "TV", new Category(3, "Electronics", "Electronics spendings"));
     e3.setUser(user);
     expenses.add(e3);
 
