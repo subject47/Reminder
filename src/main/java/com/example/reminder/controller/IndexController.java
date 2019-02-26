@@ -1,6 +1,5 @@
 package com.example.reminder.controller;
 
-import java.util.Collections;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import com.example.reminder.domain.User;
-import com.example.reminder.repositories.UserRepository;
 import com.example.reminder.services.RoleService;
 import com.example.reminder.services.UserService;
 import com.google.common.collect.Lists;
@@ -30,6 +28,11 @@ public class IndexController {
   public String index() {
     return "index";
   }
+
+	@GetMapping(value="/login")
+	public String login() {
+		return "login";
+	}
   
   @GetMapping("/registration")
   public String registration() {

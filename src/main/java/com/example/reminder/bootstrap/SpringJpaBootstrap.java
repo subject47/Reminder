@@ -3,12 +3,14 @@ package com.example.reminder.bootstrap;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
@@ -25,44 +27,36 @@ import com.example.reminder.utils.DateUtils;
 @Component
 public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
+  private static final Logger log = Logger.getLogger(SpringJpaBootstrap.class);
+
+  @Autowired
   private ProductRepository productRepository;
+  @Autowired
   private UserService userService;
+  @Autowired
   private RoleService roleService;
+  @Autowired
   private ExpenseService expenseService;
+  @Autowired
   private CategoryService categoryService;
-
-  private Logger log = Logger.getLogger(SpringJpaBootstrap.class);
-
   @Autowired
-  public void setProductRepository(ProductRepository productRepository) {
-    this.productRepository = productRepository;
-  }
+  private Environment environment;
 
-  @Autowired
-  public void setUserService(UserService userService) {
-    this.userService = userService;
-  }
-
-  @Autowired
-  public void setRoleService(RoleService roleService) {
-    this.roleService = roleService;
-  }
-
-  @Autowired
-  public void setExpenseService(ExpenseService expenseService) {
-    this.expenseService = expenseService;
-  }
-
-  @Autowired
-  public void setCategoryService(CategoryService categoryService) {
-    this.categoryService = categoryService;
-  }
 
   @Override
   public void onApplicationEvent(ContextRefreshedEvent event) {
-//	  loadDummyData();
+    if (isDevOrLocalEnv()) {
+      loadDummyData();
+    } else if (roleService.listAll().isEmpty()) {
+      loadRoles();
+    }
   }
-  
+
+  private boolean isDevOrLocalEnv() {
+    List activeEnvironments = Arrays.asList(environment.getActiveProfiles());
+    return activeEnvironments.contains("dev") || activeEnvironments.contains("local");
+  }
+
   private void loadDummyData() {
     loadProducts();
     loadUsers();
