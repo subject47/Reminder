@@ -29,13 +29,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   @Autowired
   private Environment environment;
 
-  private AuthenticationProvider authenticationProvider;
-
   @Autowired
   @Qualifier("daoAuthenticationProvider")
-  public void setAuthenticationProvider(AuthenticationProvider authenticationProvider) {
-    this.authenticationProvider = authenticationProvider;
-  }
+  private AuthenticationProvider authenticationProvider;
+
 
   @Bean
   public PasswordEncoder passwordEncoder(StrongPasswordEncryptor passwordEncryptor) {
@@ -64,7 +61,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .antMatchers("/", "/registration", "/products", "/product/show/*", "/console/**").permitAll()
         .anyRequest().authenticated()
         .and().formLogin().loginPage("/login").permitAll()
-        .and().formLogin().defaultSuccessUrl("/index")
         .and().logout().permitAll();
 
     if (isDevEnv()) {
