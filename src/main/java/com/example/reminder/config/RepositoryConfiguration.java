@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * 
  * Value			Setting
  * Driver Class		org.h2.Driver
- * JDBC URL			jdbc:h2:mem:testdb
+ * JDBC URL			jdbc:h2:mem:db
  * User Name		sa
  * Password	 		<blank>
  * */
