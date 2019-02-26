@@ -47,6 +47,8 @@ public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedE
   public void onApplicationEvent(ContextRefreshedEvent event) {
     if (isDevOrLocalEnv()) {
       loadDummyData();
+    } else if (roleService.listAll().isEmpty()) {
+      loadRoles();
     }
   }
 
