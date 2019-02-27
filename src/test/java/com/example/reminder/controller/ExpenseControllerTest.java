@@ -7,6 +7,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.example.reminder.services.CategoryServiceImpl;
+import com.example.reminder.services.ExpenseService;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
@@ -27,8 +29,6 @@ import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
 import com.example.reminder.domain.User;
 import com.example.reminder.forms.ExpenseForm;
-import com.example.reminder.services.CategoryService;
-import com.example.reminder.services.ExpenseService;
 import com.example.reminder.utils.DateUtils;
 import com.google.common.collect.Lists;
 
@@ -45,7 +45,7 @@ public class ExpenseControllerTest {
   private ExpenseService expenseService;
 
   @MockBean
-  private CategoryService categoryService;
+  private CategoryServiceImpl categoryService;
   
   private int year = 2018;
   private int month = 5;

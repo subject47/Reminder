@@ -1,7 +1,43 @@
 package com.example.reminder.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.example.reminder.domain.Role;
+import com.example.reminder.repositories.RoleRepository;
 
-public interface RoleService extends CRUDService<Role> {
+import java.util.ArrayList;
+import java.util.List;
 
+@Service
+public class RoleService extends CRUDService<Role> {
+
+    private RoleRepository roleRepository;
+
+    @Autowired
+    public void setRoleRepository(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
+
+    @Override
+    public List<Role> listAll() {
+        List<Role> roles = new ArrayList<>();
+        roleRepository.findAll().forEach(roles::add);
+        return roles;
+    }
+
+    @Override
+    public Role getById(Integer id) {
+        return roleRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public Role save(Role domainObject) {
+        return roleRepository.save(domainObject);
+    }
+
+    @Override
+    public void delete(Integer id) {
+        roleRepository.deleteById(id);
+    }
 }

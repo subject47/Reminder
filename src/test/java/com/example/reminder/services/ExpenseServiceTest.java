@@ -32,7 +32,7 @@ public class ExpenseServiceTest {
 
   @Before
   public void setUp() {
-    expenseService = new ExpenseServiceImpl(expenseRepository);
+    expenseService = new ExpenseService(expenseRepository);
 
     Date date = DateUtils.asDate(LocalDate.of(2018, Month.APRIL, 15));
     expenseForApril = new Expense(2000.0, date, "Milk", new Category("Food", "Food spendings"));

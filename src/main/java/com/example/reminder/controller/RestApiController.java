@@ -1,5 +1,7 @@
 package com.example.reminder.controller;
 
+import com.example.reminder.services.CategoryServiceImpl;
+import com.example.reminder.services.ExpenseService;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Year;
@@ -18,8 +20,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
 import com.example.reminder.forms.ChartDataForm;
-import com.example.reminder.services.CategoryService;
-import com.example.reminder.services.ExpenseService;
 import com.google.common.collect.Lists;
 
 @RestController
@@ -29,7 +29,7 @@ public class RestApiController {
     private ExpenseService expenseService;
 
     @Autowired
-    private CategoryService categoryService;
+    private CategoryServiceImpl categoryService;
 
 
     @RequestMapping(value = "/allexpenses", method = RequestMethod.GET)

@@ -9,7 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
 import com.example.reminder.domain.User;
-import com.example.reminder.services.CategoryService;
+import com.example.reminder.services.CategoryServiceImpl;
 import com.example.reminder.services.ExpenseService;
 import com.example.reminder.utils.DateUtils;
 import com.google.common.collect.Lists;
@@ -41,7 +41,7 @@ public class RestApiControllerTest {
   @MockBean
   private ExpenseService expenseService;
   @MockBean
-  private CategoryService categoryService;
+  private CategoryServiceImpl categoryService;
 
   private List<Expense> expenses;
 

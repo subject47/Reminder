@@ -6,7 +6,7 @@ import com.example.reminder.domain.Product;
 import com.example.reminder.domain.Role;
 import com.example.reminder.domain.User;
 import com.example.reminder.repositories.ProductRepository;
-import com.example.reminder.services.CategoryService;
+import com.example.reminder.services.CategoryServiceImpl;
 import com.example.reminder.services.ExpenseService;
 import com.example.reminder.services.RoleService;
 import com.example.reminder.services.UserService;
@@ -38,7 +38,7 @@ public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedE
   @Autowired
   private ExpenseService expenseService;
   @Autowired
-  private CategoryService categoryService;
+  private CategoryServiceImpl categoryService;
   @Autowired
   private Environment environment;
 
