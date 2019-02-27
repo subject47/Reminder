@@ -2,10 +2,10 @@ package com.example.reminder.services;
 
 import com.example.reminder.domain.User;
 import com.example.reminder.repositories.UserRepository;
-import com.example.reminder.services.security.EncryptionService;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,11 +13,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
 
 	private UserRepository userRepository;
-	private EncryptionService encryptionService;
+	private PasswordEncoder encoder;
 
 	@Autowired
-	public void setEncryptionService(EncryptionService encryptionService, UserRepository userRepository) {
-		this.encryptionService = encryptionService;
+	public void setEncryptionService(PasswordEncoder strongEncryptor, UserRepository userRepository) {
+		this.encoder = strongEncryptor;
 		this.userRepository = userRepository;
 	}
 
@@ -36,7 +36,8 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public User save(User user) {
 		if (user.getPassword() != null) {
-            user.setEncryptedPassword(encryptionService.encryptString(user.getPassword()));
+			String encodedPassword = encoder.encode(user.getPassword());
+			user.setEncryptedPassword(encodedPassword);
 		}
 		return userRepository.save(user);
 	}

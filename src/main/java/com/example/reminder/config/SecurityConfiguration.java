@@ -1,10 +1,10 @@
 package com.example.reminder.config;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import javax.sql.DataSource;
 
-import org.jasypt.springsecurity3.authentication.encoding.PasswordEncoder;
-import org.jasypt.util.password.StrongPasswordEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -16,15 +16,23 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
+import org.springframework.security.crypto.password.LdapShaPasswordEncoder;
+import org.springframework.security.crypto.password.Md4PasswordEncoder;
+import org.springframework.security.crypto.password.MessageDigestPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
+import org.springframework.security.crypto.password.StandardPasswordEncoder;
+import org.springframework.security.crypto.scrypt.SCryptPasswordEncoder;
 
 @Configuration
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
   @Autowired
   private DataSource dataSource;
-
-  @Autowired
-  private PasswordEncoder passwordEncoder;
 
   @Autowired
   private Environment environment;
@@ -35,15 +43,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
   @Bean
-  public PasswordEncoder passwordEncoder(StrongPasswordEncryptor passwordEncryptor) {
-    PasswordEncoder passwordEncoder = new PasswordEncoder();
-    passwordEncoder.setPasswordEncryptor(passwordEncryptor);
-    return passwordEncoder;
-  }
-
-  @Bean
-  public DaoAuthenticationProvider daoAuthenticationProvider(PasswordEncoder passwordEncoder,
-      UserDetailsService userDetailsService) {
+  @Autowired
+  public DaoAuthenticationProvider daoAuthenticationProvider(UserDetailsService userDetailsService, PasswordEncoder passwordEncoder) {
     DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
     daoAuthenticationProvider.setPasswordEncoder(passwordEncoder);
     daoAuthenticationProvider.setUserDetailsService(userDetailsService);
@@ -61,6 +62,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         .antMatchers("/", "/registration", "/products", "/product/show/*", "/console/**").permitAll()
         .anyRequest().authenticated()
         .and().formLogin().loginPage("/login").permitAll()
+        .and().formLogin().defaultSuccessUrl("/products", true)
         .and().logout().permitAll();
 
     if (isDevEnv()) {
@@ -71,8 +73,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 
   @Autowired
-  @Override
-  public void configure(AuthenticationManagerBuilder builder) throws Exception {
+  public void configure(AuthenticationManagerBuilder builder, PasswordEncoder passwordEncoder) throws Exception {
     builder
         .jdbcAuthentication()
         .dataSource(dataSource)
