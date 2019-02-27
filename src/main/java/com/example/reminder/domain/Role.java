@@ -11,13 +11,16 @@ import javax.persistence.ManyToMany;
 @Entity
 public class Role extends AbstractDomainClass {
 
+	public static final String USER = "USER";
+	public static final String ADMIN = "ADMIN";
+
 	private String role;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable
 	// ~ defaults to @JoinTable(name = "USER_ROLE", joinColumns = @JoinColumn(name =
 	// "role_id"),
-	// inverseJoinColumns = @joinColumn(name = "user_id"))
+	// inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private List<User> users = new ArrayList<>();
 
 	public String getRole() {

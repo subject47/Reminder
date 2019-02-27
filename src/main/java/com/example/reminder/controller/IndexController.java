@@ -1,6 +1,7 @@
 package com.example.reminder.controller;
 
 
+import com.example.reminder.domain.Role;
 import com.example.reminder.services.RoleService;
 import com.example.reminder.services.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -59,7 +60,7 @@ public class IndexController {
 		  return "/registration";
 	  }
 	  user.setEnabled(true);
-	  user.setRoles(Lists.newArrayList(roleService.getById(1)));
+	  user.addRole(roleService.getByName(Role.USER));
 	  userService.save(user);
 	  return "redirect:/login";
   }

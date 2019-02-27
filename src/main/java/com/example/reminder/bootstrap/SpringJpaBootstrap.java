@@ -59,8 +59,8 @@ public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedE
 
   private void loadDummyData() {
     loadProducts();
-    loadUsers();
     loadRoles();
+    loadUsers();
     loadCategories();
     loadExpenses();
     assignUsersToUserRole();
@@ -105,11 +105,11 @@ public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedE
 
   private void loadRoles() {
     Role role = new Role();
-    role.setRole("USER");
+    role.setRole(Role.USER);
     roleService.save(role);
     log.info("Saved role" + role.getRole());
     Role adminRole = new Role();
-    adminRole.setRole("ADMIN");
+    adminRole.setRole(Role.ADMIN);
     roleService.save(adminRole);
     log.info("Saved role" + adminRole.getRole());
   }
@@ -190,7 +190,7 @@ public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedE
     List<User> users = (List<User>) userService.listAll();
 
     roles.forEach(role -> {
-      if (role.getRole().equalsIgnoreCase("USER")) {
+      if (role.getRole().equalsIgnoreCase(Role.USER)) {
         users.forEach(user -> {
           if (user.getUsername().equals("user")) {
             user.addRole(role);
@@ -206,7 +206,7 @@ public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedE
     List<User> users = (List<User>) userService.listAll();
 
     roles.forEach(role -> {
-      if (role.getRole().equalsIgnoreCase("ADMIN")) {
+      if (role.getRole().equalsIgnoreCase(Role.ADMIN)) {
         users.forEach(user -> {
           if (user.getUsername().equals("admin")) {
             user.addRole(role);
