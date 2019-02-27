@@ -29,7 +29,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   public Expense getById(Integer id) {
-    return expenseRepository.findById(id).get();
+    return expenseRepository.findById(id).orElse(null);
   }
 
   public Expense save(Expense expense) {
