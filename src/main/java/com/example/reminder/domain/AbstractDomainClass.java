@@ -11,7 +11,7 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Version;
 
 @MappedSuperclass
-public class AbstractDomainClass implements DomainObject {
+public class AbstractDomainClass {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,13 +22,11 @@ public class AbstractDomainClass implements DomainObject {
 
     private Date dateCreated;
     private Date lastUpdated;
-	
-    @Override
+
     public Integer getId() {
         return this.id;
     }
 
-    @Override
     public void setId(Integer id) {
         this.id = id;
     }

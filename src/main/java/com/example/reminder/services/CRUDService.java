@@ -2,12 +2,12 @@ package com.example.reminder.services;
 
 import java.util.List;
 
-public interface CRUDService<T> {
-	List<T> listAll();
-	 
-    T getById(Integer id);
- 
-    T save(T domainObject);
- 
-    void delete(Integer id);
+public abstract class CRUDService<T> {
+	public abstract List<T> listAll();
+
+  public abstract T getById(Integer id);
+
+  public abstract T save(T domainObject);
+
+  public abstract void delete(Integer id);
 }
