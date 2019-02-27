@@ -1,17 +1,5 @@
 package com.example.reminder.bootstrap;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationListener;
-import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
 import com.example.reminder.domain.Product;
@@ -23,11 +11,23 @@ import com.example.reminder.services.ExpenseService;
 import com.example.reminder.services.RoleService;
 import com.example.reminder.services.UserService;
 import com.example.reminder.utils.DateUtils;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 
 @Component
 public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
-  private static final Logger log = Logger.getLogger(SpringJpaBootstrap.class);
+  private static final Logger log = Logger.getLogger(SpringJpaBootstrap.class.getName());
 
   @Autowired
   private ProductRepository productRepository;
