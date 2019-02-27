@@ -1,31 +1,27 @@
 package com.example.reminder.bootstrap;
 
-import java.math.BigDecimal;
-
-import org.apache.log4j.Logger;
+import com.example.reminder.repositories.ProductRepository;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import com.example.reminder.domain.Product;
-import com.example.reminder.repositories.ProductRepository;
-
 @Component
 public class ProductLoader implements ApplicationListener<ContextRefreshedEvent> {
 
-	private ProductRepository productRepository;
+  private static final Logger log = Logger.getLogger(ProductLoader.class.getName());
 
-	private Logger log = Logger.getLogger(this.getClass());
+  private ProductRepository productRepository;
 
-	@Autowired
-    public void setProductRepository(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
+  @Autowired
+  public void setProductRepository(ProductRepository productRepository) {
+    this.productRepository = productRepository;
+  }
 
-	@Override
-	public void onApplicationEvent(ContextRefreshedEvent event) {
+  @Override
+  public void onApplicationEvent(ContextRefreshedEvent event) {
 
-	}
+  }
 
 }

@@ -1,19 +1,16 @@
 package com.example.reminder.services;
 
+import com.example.reminder.domain.Expense;
+import com.example.reminder.repositories.ExpenseRepository;
+import com.example.reminder.utils.DateUtils;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.example.reminder.domain.Expense;
-import com.example.reminder.domain.User;
-import com.example.reminder.repositories.ExpenseRepository;
-import com.example.reminder.utils.DateUtils;
 
 @Service
 public class ExpenseServiceImpl implements ExpenseService {
@@ -32,7 +29,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   public Expense getById(Integer id) {
-    return expenseRepository.findOne(id);
+    return expenseRepository.findById(id).orElse(null);
   }
 
   public Expense save(Expense expense) {
@@ -40,7 +37,7 @@ public class ExpenseServiceImpl implements ExpenseService {
   }
 
   public void delete(Integer id) {
-    expenseRepository.delete(id);
+    expenseRepository.deleteById(id);
   }
 
   @Override
@@ -49,14 +46,14 @@ public class ExpenseServiceImpl implements ExpenseService {
     LocalDate end = start.plusMonths(1).minusDays(1);
     return expenseRepository.findByDateBetween(DateUtils.asDate(start), DateUtils.asDate(end));
   }
-  
+
   @Override
   public List<Expense> findExpensesByYearAndMonthAndUsername(Year year, Month month, String username) {
-	  return findAllExpensesByYearAndMonth(year, month)
-	      .stream()
-	      .filter(e -> e.getUser().getUsername().equals(username))
-	      .sorted((e1, e2) -> e1.getDate().compareTo(e2.getDate()))
-	      .collect(Collectors.toList());
+    return findAllExpensesByYearAndMonth(year, month)
+        .stream()
+        .filter(e -> e.getUser().getUsername().equals(username))
+        .sorted((e1, e2) -> e1.getDate().compareTo(e2.getDate()))
+        .collect(Collectors.toList());
   }
 
 }
