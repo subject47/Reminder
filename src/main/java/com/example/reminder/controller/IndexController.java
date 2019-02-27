@@ -25,12 +25,12 @@ public class IndexController {
   @Autowired
   private RoleService roleService;
 	
-  @GetMapping("/")
+  @GetMapping("/index")
   public String index() {
     return "index";
   }
 
-	@GetMapping(value="/login")
+	@GetMapping("/login")
 	public String login() {
 		return "login";
 	}

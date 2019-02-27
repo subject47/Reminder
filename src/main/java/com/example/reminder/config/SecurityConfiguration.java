@@ -52,6 +52,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/actuator/**").permitAll()
         .anyRequest().authenticated()
         .and().formLogin().loginPage("/login").permitAll()
+            .defaultSuccessUrl("/index", true)
         .and().logout().permitAll();
 
     if (isDevEnv()) {
