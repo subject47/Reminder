@@ -18,19 +18,19 @@ import java.time.Month;
 import java.time.Year;
 import java.util.Date;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser
@@ -45,8 +45,8 @@ public class RestApiControllerTest {
 
   private List<Expense> expenses;
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setUp() {
     expenses = Lists.newArrayList();
     User user = new User("user", "pw");
 
@@ -68,17 +68,17 @@ public class RestApiControllerTest {
   }
 
   @Test
-  public void generateChartData() throws Exception {
+  void generateChartData() throws Exception {
     when(expenseService.findExpensesByYearAndMonthAndUsername(Year.of(2018), Month.MAY, "user"))
         .thenReturn(expenses);
 
     mvc.perform(get("/chartdata?date=1525122000000")
-    		.contentType(MediaType.APPLICATION_JSON))
+        .contentType(MediaType.APPLICATION_JSON))
 //        	.andDo(print())
-        	.andExpect(status().isOk())
-        	.andExpect(content().string(
+        .andExpect(status().isOk())
+        .andExpect(content().string(
             "{\"cols\":[{\"id\":\"\",\"label\":\"Category\",\"pattern\":\"\",\"type\":\"string\"},{\"id\":\"\",\"label\":\"Amount\",\"pattern\":\"\",\"type\":\"number\"}],\"rows\":[{\"c\":[{\"v\":\"Medicine\",\"f\":null},{\"v\":1000.0,\"f\":null}]},{\"c\":[{\"v\":\"Food\",\"f\":null},{\"v\":2000.0,\"f\":null}]},{\"c\":[{\"v\":\"Electronics\",\"f\":null},{\"v\":3000.0,\"f\":null}]}]}"));
-   
+
     verify(expenseService).findExpensesByYearAndMonthAndUsername(Year.of(2018), Month.MAY, "user");
   }
 }
