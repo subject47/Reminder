@@ -3,7 +3,7 @@ package com.example.reminder.controller;
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
 import com.example.reminder.forms.ExpenseForm;
-import com.example.reminder.services.CategoryServiceImpl;
+import com.example.reminder.services.CategoryService;
 import com.example.reminder.services.ExpenseService;
 import com.example.reminder.services.UserService;
 import com.example.reminder.utils.DateUtils;
@@ -32,7 +32,7 @@ public class ExpenseController {
   private ExpenseService expenseService;
 
   @Autowired
-  private CategoryServiceImpl categoryService;
+  private CategoryService categoryService;
 
   
   private static final List<String> YEARS =

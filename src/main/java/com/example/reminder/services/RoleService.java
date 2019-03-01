@@ -31,6 +31,11 @@ public class RoleService extends CRUDService<Role> {
         return roleRepository.findById(id).orElse(null);
     }
 
+
+    public Role getByName(String name) {
+        return roleRepository.findByRole(name);
+    }
+
     @Override
     public Role save(Role domainObject) {
         return roleRepository.save(domainObject);

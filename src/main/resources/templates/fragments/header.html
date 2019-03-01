@@ -12,14 +12,14 @@
                 <div class="navbar-header">
                     <a class="navbar-brand" href="#" th:href="@{/}">Home</a>
                     <ul class="nav navbar-nav">
-                        <li><a href="#" th:href="@{/products}" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">Products</a></li>
-                        <li><a href="#" th:href="@{/product/new}" sec:authorize="hasAuthority('ADMIN')">Create Product</a></li>
-                        <li><a href="#" th:href="@{/login}" sec:authorize="isAnonymous()">Sign In</a></li>
-                        <li><a href="#" th:href="@{/dates}" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">Select Date Range</a></li>
-                        <li><a href="#" th:href="@{/expense/new}" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">Create Expense</a></li>
-                        <li><a href="#" th:href="@{/allexpenses}" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">All Expenses</a></li>
-                        <li><a href="#" th:href="@{/expensesbycategory}" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">Grouped Expenses</a></li>
-                        <li><a href="#" th:href="@{/allcategories}" sec:authorize="hasAnyAuthority('ADMIN', 'USER')">All Categories</a></li>
+                        <li sec:authorize="hasAnyAuthority('ADMIN', 'USER')"><a href="#" th:href="@{/products}">Products</a></li>
+                        <li sec:authorize="hasAuthority('ADMIN')"><a href="#" th:href="@{/product/new}">Create Product</a></li>
+                        <li sec:authorize="isAnonymous()"><a href="#" th:href="@{/login}">Sign In</a></li>
+                        <li sec:authorize="hasAnyAuthority('ADMIN', 'USER')"><a href="#" th:href="@{/dates}">Select Date Range</a></li>
+                        <li sec:authorize="hasAnyAuthority('ADMIN', 'USER')"><a href="#" th:href="@{/expense/new}">Create Expense</a></li>
+                        <li sec:authorize="hasAnyAuthority('ADMIN', 'USER')"><a href="#" th:href="@{/allexpenses}">All Expenses</a></li>
+                        <li sec:authorize="hasAnyAuthority('ADMIN', 'USER')"><a href="#" th:href="@{/expensesbycategory}">Grouped Expenses</a></li>
+                        <li sec:authorize="hasAnyAuthority('ADMIN', 'USER')"><a href="#" th:href="@{/allcategories}">All Categories</a></li>
                         <li sec:authorize="isAuthenticated()">
 	                        <form th:action="@{/logout}" method="post">
 					            <div style="padding-top: 10px;">

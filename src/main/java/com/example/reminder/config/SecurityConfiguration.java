@@ -46,10 +46,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
   protected void configure(HttpSecurity httpSecurity) throws Exception {
     httpSecurity
         .authorizeRequests()
-        .antMatchers("/", "/registration", "/products", "/product/show/*", "/console/**").permitAll()
+        .antMatchers("/",
+            "/registration",
+            "/console/**",
+            "/actuator/**").permitAll()
         .anyRequest().authenticated()
         .and().formLogin().loginPage("/login").permitAll()
-        .and().formLogin().defaultSuccessUrl("/products", true)
+            .defaultSuccessUrl("/index", true)
         .and().logout().permitAll();
 
     if (isDevEnv()) {
