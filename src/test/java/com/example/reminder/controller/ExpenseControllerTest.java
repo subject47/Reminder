@@ -35,6 +35,9 @@ import org.springframework.test.web.servlet.MockMvc;
 @WithMockUser
 public class ExpenseControllerTest {
 
+  private static final int year = 2018;
+  private static final int month = 5;
+
   @Autowired
   private MockMvc mvc;
 
@@ -44,8 +47,6 @@ public class ExpenseControllerTest {
   @MockBean
   private CategoryService categoryService;
 
-  private int year = 2018;
-  private int month = 5;
   private List<Expense> expenses;
   private List<Category> categories;
   private Expense expense;

@@ -1,23 +1,24 @@
 package com.example.reminder.repositories;
 
 import static com.google.common.truth.Truth.assertThat;
-import java.time.LocalDate;
-import java.time.Month;
-import java.util.Date;
-import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.junit4.SpringRunner;
+
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
 import com.example.reminder.utils.DateUtils;
 import com.google.common.collect.Lists;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.Date;
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @DataJpaTest
 public class ExpenseRepositoryTest {
 
@@ -33,13 +34,13 @@ public class ExpenseRepositoryTest {
   private List<Expense> expensesForApril;
   private List<Expense> expensesForJune;
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setup() {
     loadData();
   }
 
   @Test
-  public void findByDateBetween_May2018() {
+  void findByDateBetween_May2018() {
     // given
     Date firstDay = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1));
     Date lastDay = DateUtils.asDate(LocalDate.of(2018, Month.JUNE, 1));
