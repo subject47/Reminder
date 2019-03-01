@@ -1,6 +1,6 @@
 package com.example.reminder.controller;
 
-import com.example.reminder.services.CategoryServiceImpl;
+import com.example.reminder.services.CategoryService;
 import com.example.reminder.services.ExpenseService;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -29,7 +29,7 @@ public class RestApiController {
     private ExpenseService expenseService;
 
     @Autowired
-    private CategoryServiceImpl categoryService;
+    private CategoryService categoryService;
 
 
     @RequestMapping(value = "/allexpenses", method = RequestMethod.GET)

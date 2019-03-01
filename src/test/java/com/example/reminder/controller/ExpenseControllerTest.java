@@ -7,7 +7,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.example.reminder.services.CategoryServiceImpl;
+import com.example.reminder.services.CategoryService;
 import com.example.reminder.services.ExpenseService;
 import java.time.LocalDate;
 import java.time.Month;
@@ -45,7 +45,7 @@ public class ExpenseControllerTest {
   private ExpenseService expenseService;
 
   @MockBean
-  private CategoryServiceImpl categoryService;
+  private CategoryService categoryService;
   
   private int year = 2018;
   private int month = 5;
