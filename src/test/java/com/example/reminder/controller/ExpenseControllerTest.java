@@ -12,6 +12,8 @@ import com.example.reminder.domain.User;
 import com.example.reminder.forms.ExpenseForm;
 import com.example.reminder.services.CategoryService;
 import com.example.reminder.services.ExpenseService;
+import com.example.reminder.util.TestUtils.CategoryBuilder;
+import com.example.reminder.util.TestUtils.ExpenseBuilder;
 import com.example.reminder.utils.DateUtils;
 import com.google.common.collect.Lists;
 import java.time.LocalDate;
@@ -35,8 +37,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @WithMockUser
 public class ExpenseControllerTest {
 
-  private static final int year = 2018;
-  private static final int month = 5;
+  private static final int YEAR = 2018;
+  private static final int MONTH = 5;
 
   @Autowired
   private MockMvc mvc;
@@ -54,20 +56,27 @@ public class ExpenseControllerTest {
   @BeforeEach
   void setup() {
     User user = new User("user", "pw");
-    Category category1 = new Category("Cat1_Name", "Cat1_Description");
-    category1.setId(1);
-    Category category2 = new Category("Cat2_Name", "Cat2_Description");
-    category2.setId(2);
+
+    Category category1 = new CategoryBuilder()
+        .id(1)
+        .name("Cat1_Name")
+        .description("Cat1_Description")
+        .build();
+    Category category2 = new CategoryBuilder()
+        .id(2)
+        .name("Cat2_Name")
+        .description("Cat2_Description")
+        .build();
     categories = Lists.newArrayList(category1, category2);
-    LocalDate date1 = LocalDate.of(year, month, 6);
-    expense = new Expense(2000.0, DateUtils.asDate(date1), "Expense1", category1);
-    expense.setUser(user);
-    expense.setId(1);
-    LocalDate date2 = LocalDate.of(year, month, 8);
-    Expense expense2 = new Expense(4000.0, DateUtils.asDate(date2), "Expense2", category2);
-    expense.setUser(user);
-    expense2.setId(2);
-    expenses = Lists.newArrayList(expense, expense2);
+
+    expense = new ExpenseBuilder()
+        .date(DateUtils.asDate(
+            LocalDate.of(YEAR, MONTH, 6)))
+        .category(category1)
+        .user(user)
+        .build();
+
+    expenses = Lists.newArrayList(expense);
   }
 
   @Test
@@ -80,16 +89,18 @@ public class ExpenseControllerTest {
   }
 
   @Test
-  @WithMockUser("user")
+  @WithMockUser
   void expenses() throws Exception {
-    when(expenseService.findExpensesByYearAndMonthAndUsername(Year.of(year), Month.of(month), "user"))
+    Year year = Year.of(YEAR);
+    Month month = Month.of(MONTH);
+    when(expenseService.findExpensesByYearAndMonthAndUsername(year, month, "user"))
         .thenReturn(expenses);
 
     mvc.perform(get("/expenses?year=2018&month=5"))
 //		  .andDo(print())
         .andExpect(status().isOk())
         .andExpect(model().attribute("expenses", expenses));
-    verify(expenseService).findExpensesByYearAndMonthAndUsername(Year.of(year), Month.of(month), "user");
+    verify(expenseService).findExpensesByYearAndMonthAndUsername(year, month, "user");
   }
 
   //  @Test

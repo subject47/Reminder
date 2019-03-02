@@ -6,17 +6,17 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
 import com.example.reminder.domain.User;
 import com.example.reminder.services.CategoryService;
 import com.example.reminder.services.ExpenseService;
+import com.example.reminder.util.TestUtils.CategoryBuilder;
+import com.example.reminder.util.TestUtils.ExpenseBuilder;
 import com.example.reminder.utils.DateUtils;
 import com.google.common.collect.Lists;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
-import java.util.Date;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -50,21 +50,54 @@ public class RestApiControllerTest {
     expenses = Lists.newArrayList();
     User user = new User("user", "pw");
 
-    Date date1 = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1));
-    Expense e1 = new Expense(2000.0, date1, "Milk", new Category(2, "Food", "Food spendings"));
-    e1.setUser(user);
-    expenses.add(e1);
+    Expense expense1 = new ExpenseBuilder()
+        .user(user)
+        .amount(1000.0)
+        .date(
+            DateUtils.asDate(
+                LocalDate.of(2018, Month.MAY, 15)))
+        .description("Condoms")
+        .category(
+            new CategoryBuilder()
+                .id(1)
+                .name("Medicine")
+                .description("Medicine spendings")
+                .build())
+        .build();
 
-    Date date2 = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 15));
-    Expense e2 = new Expense(1000.0, date2, "Condoms", new Category(1, "Medicine", "Medicine spendings"));
-    e2.setUser(user);
-    expenses.add(e2);
+    Expense expense2 = new ExpenseBuilder()
+        .user(user)
+        .amount(2000.0)
+        .date(
+            DateUtils.asDate(
+                LocalDate.of(2018, Month.MAY, 1)))
+        .description("Milk")
+        .category(
+            new CategoryBuilder()
+                .id(2)
+                .name("Food")
+                .description("Food spendings")
+                .build())
+        .build();
 
-    Date date3 = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 31));
-    Expense e3 = new Expense(3000.0, date3, "TV", new Category(3, "Electronics", "Electronics spendings"));
-    e3.setUser(user);
-    expenses.add(e3);
+    Expense expense3 = new ExpenseBuilder()
+        .user(user)
+        .amount(3000.0)
+        .date(
+            DateUtils.asDate(
+                LocalDate.of(2018, Month.MAY, 31)))
+        .description("TV")
+        .category(
+            new CategoryBuilder()
+                .id(3)
+                .name("Electronics")
+                .description("Electronics spendings")
+                .build())
+        .build();
 
+    expenses.add(expense1);
+    expenses.add(expense2);
+    expenses.add(expense3);
   }
 
   @Test
