@@ -2,6 +2,7 @@ package com.example.reminder.domain;
 
 import java.math.BigDecimal;
 
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -68,5 +69,27 @@ public class Product {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, version, productId, description, imageUrl, price);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (this == o || this.getClass() == o.getClass()) {
+            return true;
+        }
+        Product other = (Product) o;
+        return Objects.equals(id, other.getId())
+            && Objects.equals(version, other.getVersion())
+            && Objects.equals(productId, other.getProductId())
+            && Objects.equals(description, other.getDescription())
+            && Objects.equals(imageUrl, other.getImageUrl())
+            && Objects.equals(price, other.getPrice());
     }
 }

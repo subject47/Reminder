@@ -29,7 +29,8 @@ public class Expense extends AbstractDomainClass {
 
   public Expense() {}
 
-  public Expense(Double amount, Date date, String description, Category category) {
+  public Expense(User user, Double amount, Date date, String description, Category category) {
+    this.user = user;
     this.amount = amount;
     this.date = date;
     this.description = description;

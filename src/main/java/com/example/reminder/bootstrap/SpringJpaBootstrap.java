@@ -65,7 +65,7 @@ public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedE
     loadExpenses();
     assignUsersToUserRole();
     assignUsersToAdminRole();
-    assignExpensesToUsers();
+//    assignExpensesToUsers();
   }
 
   private void loadProducts() {
@@ -137,39 +137,40 @@ public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedE
   }
 
   private void loadExpenses() {
+    User user = (User) userService.listAll().get(0);
     Category category1 = categoryService.findByName("Food");
     Date date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1));
-    Expense expense1 = new Expense(2000.0, date, "Milk", category1);
+    Expense expense1 = new Expense(user, 2000.0, date, "Milk", category1);
     expenseService.save(expense1);
 
     date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 12));
     Category category2 = categoryService.findByName("Food");
-    Expense expense2 = new Expense(6000.0, date, "Meat", category2);
+    Expense expense2 = new Expense(user, 6000.0, date, "Meat", category2);
     expenseService.save(expense2);
 
     date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 20));
     Category category3 = categoryService.findByName("Food");
-    Expense expense3 = new Expense(3000.0, date, "Bread", category3);
+    Expense expense3 = new Expense(user, 3000.0, date, "Bread", category3);
     expenseService.save(expense3);
 
     date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 31));
     Category category4 = categoryService.findByName("Electronics");
-    Expense expense4 = new Expense(6000.0, date, "TV", category4);
+    Expense expense4 = new Expense(user, 6000.0, date, "TV", category4);
     expenseService.save(expense4);
 
     date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 31));
     Category category5 = categoryService.findByName("Medicine");
-    Expense expense5 = new Expense(1500.0, date, "Pills", category5);
+    Expense expense5 = new Expense(user, 1500.0, date, "Pills", category5);
     expenseService.save(expense5);
 
     date = DateUtils.asDate(LocalDate.of(2018, Month.JUNE, 1));
     Category category6 = categoryService.findByName("Medicine");
-    Expense expense6 = new Expense(500.0, date, "Expense 3 description", category6);
+    Expense expense6 = new Expense(user, 500.0, date, "Expense 3 description", category6);
     expenseService.save(expense6);
 
     date = DateUtils.asDate(LocalDate.of(2018, Month.APRIL, 30));
     Category category7 = categoryService.findByName("Utilities");
-    Expense expense7 = new Expense(7500.0, date, "Expense 4 description", category7);
+    Expense expense7 = new Expense(user, 7500.0, date, "Expense 4 description", category7);
     expenseService.save(expense7);
   }
 
