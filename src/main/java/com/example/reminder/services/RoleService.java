@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class RoleService extends CRUDService<Role> {
+public class RoleService implements CRUDService<Role> {
 
     private RoleRepository roleRepository;
 

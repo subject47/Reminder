@@ -1,7 +1,11 @@
 package com.example.reminder.controller;
 
+import com.example.reminder.domain.Category;
+import com.example.reminder.domain.Expense;
+import com.example.reminder.forms.ChartDataForm;
 import com.example.reminder.services.CategoryService;
 import com.example.reminder.services.ExpenseService;
+import com.google.common.collect.Lists;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Year;
@@ -10,17 +14,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import com.example.reminder.domain.Category;
-import com.example.reminder.domain.Expense;
-import com.example.reminder.forms.ChartDataForm;
-import com.google.common.collect.Lists;
 
 @RestController
 public class RestApiController {
@@ -32,7 +30,7 @@ public class RestApiController {
     private CategoryService categoryService;
 
 
-    @RequestMapping(value = "/allexpenses", method = RequestMethod.GET)
+    @GetMapping(value = "/allexpenses")
     public List<Expense> listAllExpenses() {
         List<Expense> expenses = expenseService.listAll();
         expenses = expenses.stream().map(e -> {
@@ -43,13 +41,13 @@ public class RestApiController {
     }
 
 
-    @RequestMapping(value = "/expensesbycategory", method = RequestMethod.GET)
+    @GetMapping(value = "/expensesbycategory")
     public List<Expense> listAllExpensesGroupedByCategory() {
         return groupExpensesByCategory(listAllExpenses());
     }
 
     // This method creates a Google charts API specific data structure to feed the chart with.
-    @RequestMapping(value = "/chartdata", method = RequestMethod.GET)
+    @GetMapping(value = "/chartdata")
     public ChartDataForm generateChartData(@RequestParam("date") String timestamp, Authentication authentication) {
         LocalDate date = Instant.ofEpochMilli(Long.parseLong(timestamp)).atZone(ZoneId.systemDefault())
                 .toLocalDate();
@@ -75,10 +73,9 @@ public class RestApiController {
     }
 
 
-    @RequestMapping(value = "/allcategories", method = RequestMethod.GET)
+    @GetMapping(value = "/allcategories")
     public List<Category> listAllCategories() {
-        List<Category> categories = categoryService.listAll();
-        return categories;
+        return categoryService.listAll();
     }
 
 

@@ -13,6 +13,10 @@ import java.util.Date;
  */
 public class DateUtils {
 
+  private DateUtils() {
+    throw new UnsupportedOperationException(DateUtils.class.getName() + " class can not be instantiated");
+  }
+
   public static Date asDate(LocalDate localDate) {
     return Date.from(localDate.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
   }

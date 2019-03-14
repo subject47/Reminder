@@ -10,14 +10,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class UserService extends CRUDService<User> {
+public class UserService implements CRUDService<User> {
 
 	private UserRepository userRepository;
 	private PasswordEncoder encoder;
 
 	@Autowired
-	public void setEncryptionService(PasswordEncoder strongEncryptor, UserRepository userRepository) {
-		this.encoder = strongEncryptor;
+	public UserService(PasswordEncoder encoder, UserRepository userRepository) {
+		this.encoder = encoder;
 		this.userRepository = userRepository;
 	}
 
