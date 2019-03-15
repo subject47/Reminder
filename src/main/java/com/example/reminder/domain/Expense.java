@@ -5,6 +5,7 @@ import java.util.Date;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
+import javax.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 import com.example.reminder.utils.DateUtils;
 import com.google.common.base.Objects;
@@ -15,17 +16,21 @@ public class Expense extends AbstractDomainClass {
   private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
   @ManyToOne
+  @NotNull
   private User user;
+  @NotNull
   private Double amount;
   @DateTimeFormat(pattern = "yyyy-MM-dd")
   private Date date;
   @OneToOne
+  @NotNull
   private Category category;
   private String description;
 
   public Expense() {}
 
-  public Expense(Double amount, Date date, String description, Category category) {
+  public Expense(User user, Double amount, Date date, String description, Category category) {
+    this.user = user;
     this.amount = amount;
     this.date = date;
     this.description = description;

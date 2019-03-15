@@ -2,6 +2,7 @@ package com.example.reminder.controller;
 
 
 import com.example.reminder.domain.Role;
+import com.example.reminder.domain.User;
 import com.example.reminder.services.RoleService;
 import com.example.reminder.services.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -11,58 +12,58 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import com.example.reminder.domain.User;
-import com.google.common.collect.Lists;
-
 @Controller
 public class IndexController {
 
-  private static final int PASSWORD_LENGTH_MIN = 3;	
-	
+  private static final String MESSAGE = "message";
+  private static final String REGISTRATION_TEMPLATE = "/registration";
+
+  private static final int PASSWORD_LENGTH_MIN = 3;
+
   @Autowired
   private UserService userService;
-  
+
   @Autowired
   private RoleService roleService;
-	
+
   @GetMapping("/index")
   public String index() {
     return "index";
   }
 
-	@GetMapping("/login")
-	public String login() {
-		return "login";
-	}
-  
+  @GetMapping("/login")
+  public String login() {
+    return "login";
+  }
+
   @GetMapping("/registration")
   public String registration() {
-	  return "registration";
+    return "registration";
   }
-  
+
   @PostMapping("/registration")
   public String registration(User user, Model model) {
-	  User existingUser = userService.findByUsername(user.getUsername());
-	  if (existingUser != null) {
-		  model.addAttribute("message", "User exists!");
-		  return "/registration";
-	  }
-	  if (StringUtils.isEmpty(user.getPassword()) || user.getPassword().length() < PASSWORD_LENGTH_MIN) {
-		  model.addAttribute("message", "Password must contain at least " + PASSWORD_LENGTH_MIN + " characters.");
-		  return "/registration";
-	  }
-	  if (StringUtils.isEmpty(user.getRepeatPassword())) {
-		  model.addAttribute("message", "Repeat password");
-		  return "/registration";
-	  }
-	  if (!user.getPassword().equals(user.getRepeatPassword())) {
-		  model.addAttribute("message", "Passwords don't match!");
-		  return "/registration";
-	  }
-	  user.setEnabled(true);
-	  user.addRole(roleService.getByName(Role.USER));
-	  userService.save(user);
-	  return "redirect:/login";
+    User existingUser = userService.findByUsername(user.getUsername());
+    if (existingUser != null) {
+      model.addAttribute(MESSAGE, "User exists!");
+      return REGISTRATION_TEMPLATE;
+    }
+    if (StringUtils.isEmpty(user.getPassword()) || user.getPassword().length() < PASSWORD_LENGTH_MIN) {
+      model.addAttribute(MESSAGE, "Password must contain at least " + PASSWORD_LENGTH_MIN + " characters.");
+      return REGISTRATION_TEMPLATE;
+    }
+    if (StringUtils.isEmpty(user.getRepeatPassword())) {
+      model.addAttribute(MESSAGE, "Repeat password");
+      return REGISTRATION_TEMPLATE;
+    }
+    if (!user.getPassword().equals(user.getRepeatPassword())) {
+      model.addAttribute(MESSAGE, "Passwords don't match!");
+      return REGISTRATION_TEMPLATE;
+    }
+    user.setEnabled(true);
+    user.addRole(roleService.getByName(Role.USER));
+    userService.save(user);
+    return "redirect:/login";
   }
 
 }

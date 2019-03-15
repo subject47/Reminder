@@ -14,7 +14,7 @@ public class Role extends AbstractDomainClass {
 	public static final String USER = "USER";
 	public static final String ADMIN = "ADMIN";
 
-	private String role;
+	private String name;
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	@JoinTable
@@ -23,12 +23,12 @@ public class Role extends AbstractDomainClass {
 	// inverseJoinColumns = @JoinColumn(name = "user_id"))
 	private List<User> users = new ArrayList<>();
 
-	public String getRole() {
-		return role;
+	public String getName() {
+		return name;
 	}
 
-	public void setRole(String role) {
-		this.role = role;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public List<User> getUsers() {

@@ -13,12 +13,14 @@ import com.example.reminder.domain.Product;
 @Controller
 public class ProductController {
 
+	private static final String PRODUCT = "product";
+
 	@Autowired
 	private ProductService productService;
 
 	@GetMapping("product/new")
 	public String newProduct(Model model) {
-		model.addAttribute("product", new Product());
+		model.addAttribute(PRODUCT, new Product());
 		return "productform";
 	}
 
@@ -30,7 +32,7 @@ public class ProductController {
 
 	@GetMapping("product/{id}")
 	public String showProduct(@PathVariable Integer id, Model model) {
-		model.addAttribute("product", productService.getById(id));
+		model.addAttribute(PRODUCT, productService.getById(id));
 		return "productshow";
 	}
 	
@@ -42,7 +44,7 @@ public class ProductController {
 	
 	@GetMapping("product/edit/{id}")
 	public String edit(@PathVariable Integer id, Model model) {
-		model.addAttribute("product", productService.getById(id));
+		model.addAttribute(PRODUCT, productService.getById(id));
 		return "productform";
 	}
 	

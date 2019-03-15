@@ -1,29 +1,33 @@
 package com.example.reminder.repositories;
 
 import static com.google.common.truth.Truth.assertThat;
+
+import com.example.reminder.domain.Category;
+import com.example.reminder.domain.Expense;
+import com.example.reminder.domain.User;
+import com.example.reminder.util.TestUtils.ExpenseBuilder;
+import com.example.reminder.utils.DateUtils;
+import com.google.common.collect.Lists;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Date;
 import java.util.List;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.test.context.junit4.SpringRunner;
-import com.example.reminder.domain.Category;
-import com.example.reminder.domain.Expense;
-import com.example.reminder.utils.DateUtils;
-import com.google.common.collect.Lists;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @DataJpaTest
 public class ExpenseRepositoryTest {
 
   @Autowired
   private TestEntityManager entityManager;
-
+  @Autowired
+  private UserRepository userRepository;
   @Autowired
   private ExpenseRepository expenseRepository;
   @Autowired
@@ -33,13 +37,13 @@ public class ExpenseRepositoryTest {
   private List<Expense> expensesForApril;
   private List<Expense> expensesForJune;
 
-  @Before
-  public void setUp() {
+  @BeforeEach
+  void setup() {
     loadData();
   }
 
   @Test
-  public void findByDateBetween_May2018() {
+  void findByDateBetween_May2018() {
     // given
     Date firstDay = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1));
     Date lastDay = DateUtils.asDate(LocalDate.of(2018, Month.JUNE, 1));
@@ -51,34 +55,61 @@ public class ExpenseRepositoryTest {
 
   private void loadData() {
     loadCategories();
+    entityManager.persist(new User("user", "password"));
 
     expensesForMay = Lists.newArrayList();
     expensesForApril = Lists.newArrayList();
     expensesForJune = Lists.newArrayList();
 
-    Category category1 = categoryRepository.findByName("Food");
-    Date date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1));
-    Expense expense1 = new Expense(2000.0, date, "Milk", category1);
+    Expense expense1 = new ExpenseBuilder()
+        .user(userRepository.findByUsername("user"))
+        .amount(2000.0)
+        .date(DateUtils.asDate(
+            LocalDate.of(2018, Month.MAY, 1)))
+        .description("Milk")
+        .category(categoryRepository.findByName("Food"))
+        .build();
+
+    Expense expense2 = new ExpenseBuilder()
+        .user(userRepository.findByUsername("user"))
+        .amount(6000.0)
+        .date(DateUtils.asDate(
+            LocalDate.of(2018, Month.MAY, 15)))
+        .description("Meat")
+        .category(categoryRepository.findByName("Food"))
+        .build();
+
+    Expense expense3 = new ExpenseBuilder()
+        .user(userRepository.findByUsername("user"))
+        .amount(3000.0)
+        .date(DateUtils.asDate(
+            LocalDate.of(2018, Month.MAY, 31)))
+        .description("Bread")
+        .category(categoryRepository.findByName("Food"))
+        .build();
+
+    Expense expense4 = new ExpenseBuilder()
+        .user(userRepository.findByUsername("user"))
+        .amount(500.0)
+        .date(DateUtils.asDate(
+            LocalDate.of(2018, Month.JUNE, 1)))
+        .description("Pills")
+        .category(categoryRepository.findByName("Medicine"))
+        .build();
+
+    Expense expense5 = new ExpenseBuilder()
+        .user(userRepository.findByUsername("user"))
+        .amount(7500.0)
+        .date(DateUtils.asDate(
+            LocalDate.of(2018, Month.APRIL, 30)))
+        .description("TV")
+        .category(categoryRepository.findByName("Utilities"))
+        .build();
+
     expensesForMay.add(expense1);
-
-    date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 15));
-    Category category2 = categoryRepository.findByName("Food");
-    Expense expense2 = new Expense(6000.0, date, "Meat", category2);
     expensesForMay.add(expense2);
-
-    date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 31));
-    Category category3 = categoryRepository.findByName("Food");
-    Expense expense3 = new Expense(3000.0, date, "Bread", category3);
     expensesForMay.add(expense3);
-
-    date = DateUtils.asDate(LocalDate.of(2018, Month.JUNE, 1));
-    Category category4 = categoryRepository.findByName("Medicine");
-    Expense expense4 = new Expense(500.0, date, "Expense 3 description", category4);
     expensesForJune.add(expense4);
-
-    date = DateUtils.asDate(LocalDate.of(2018, Month.APRIL, 30));
-    Category category5 = categoryRepository.findByName("Utilities");
-    Expense expense5 = new Expense(7500.0, date, "Expense 4 description", category5);
     expensesForApril.add(expense5);
 
     entityManager.persist(expense1);

@@ -5,7 +5,6 @@ import com.example.reminder.services.UserService;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service("userDetailsService")
@@ -20,7 +19,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
   }
 
   @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+  public UserDetails loadUserByUsername(String username) {
     return userUserDetailsConverter.convert(userService.findByUsername(username));
   }
 }

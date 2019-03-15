@@ -1,72 +1,72 @@
 package com.example.reminder.domain;
 
 import java.math.BigDecimal;
-
+import java.util.Objects;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Version;
 
 @Entity
-public class Product {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+public class Product extends AbstractDomainClass {
 
-    @Version
-    private Integer version;
+  public static final String FOOD = "Food";
+  public static final String ELECTRONICS = "Electronics";
+  public static final String MEDICINE = "Medicine";
+  public static final String UTILITIES = "Utilities";
 
-    private String productId;
-    private String description;
-    private String imageUrl;
-    private BigDecimal price;
+  private String name;
+  private String description;
+  private String imageUrl;
+  private BigDecimal price;
 
-    public String getDescription() {
-        return description;
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getImageUrl() {
+    return imageUrl;
+  }
+
+  public void setImageUrl(String imageUrl) {
+    this.imageUrl = imageUrl;
+  }
+
+  public BigDecimal getPrice() {
+    return price;
+  }
+
+  public void setPrice(BigDecimal price) {
+    this.price = price;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, name, description, imageUrl, price);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null) {
+      return false;
     }
-
-    public void setDescription(String description) {
-        this.description = description;
+    if (this == o || this.getClass() == o.getClass()) {
+      return true;
     }
-
-    public Integer getVersion() {
-        return version;
-    }
-
-    public void setVersion(Integer version) {
-        this.version = version;
-    }
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getProductId() {
-        return productId;
-    }
-
-    public void setProductId(String productId) {
-        this.productId = productId;
-    }
-
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public BigDecimal getPrice() {
-        return price;
-    }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
+    Product other = (Product) o;
+    return Objects.equals(id, other.getId())
+        && Objects.equals(name, other.getName())
+        && Objects.equals(description, other.getDescription())
+        && Objects.equals(imageUrl, other.getImageUrl())
+        && Objects.equals(price, other.getPrice());
+  }
 }

@@ -1,16 +1,17 @@
 package com.example.reminder.services;
 
+import com.example.reminder.domain.Role;
+import com.example.reminder.repositories.RoleRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.reminder.domain.Role;
-import com.example.reminder.repositories.RoleRepository;
-
-import java.util.ArrayList;
-import java.util.List;
-
 @Service
-public class RoleService extends CRUDService<Role> {
+public class RoleService implements CRUDService<Role> {
+
+    private static final Logger log = Logger.getLogger(RoleService.class.getName());
 
     private RoleRepository roleRepository;
 
@@ -33,12 +34,13 @@ public class RoleService extends CRUDService<Role> {
 
 
     public Role getByName(String name) {
-        return roleRepository.findByRole(name);
+        return roleRepository.findByName(name);
     }
 
     @Override
-    public Role save(Role domainObject) {
-        return roleRepository.save(domainObject);
+    public Role save(Role role) {
+        log.info(() -> "Saving role: " + role.getName());
+        return roleRepository.save(role);
     }
 
     @Override

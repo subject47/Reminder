@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class ExpenseController {
 
+  private static final String EXPENSE_FORM = "expenseForm";
+
   @Autowired
   private UserService userService;
 	
@@ -76,8 +78,8 @@ public class ExpenseController {
   public String newExpense(Model model) {
     List<Category> categories = categoryService.listAll();
     ExpenseForm form = new ExpenseForm(categories);
-    model.addAttribute("expenseForm", form);
-    return "expenseForm";
+    model.addAttribute(EXPENSE_FORM, form);
+    return EXPENSE_FORM;
   }
 
   @GetMapping("/expense/edit")
@@ -85,8 +87,8 @@ public class ExpenseController {
     List<Category> categories = categoryService.listAll();
     Expense expense = expenseService.getById(id);
     ExpenseForm form = new ExpenseForm(expense, categories);
-    model.addAttribute("expenseForm", form);
-    return "expenseForm";
+    model.addAttribute(EXPENSE_FORM, form);
+    return EXPENSE_FORM;
   }
 
   @PostMapping("/expense")
