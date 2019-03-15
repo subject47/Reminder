@@ -18,7 +18,7 @@ public class ProductLoader implements ApplicationListener<ContextRefreshedEvent>
 
   @Override
   public void onApplicationEvent(ContextRefreshedEvent event) {
-
+    // TODO: Add products
   }
 
 }

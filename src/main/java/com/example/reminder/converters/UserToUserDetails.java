@@ -24,7 +24,7 @@ public class UserToUserDetails implements Converter<User, UserDetails> {
             userDetails.setEnabled(user.getEnabled());
             Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
             user.getRoles().forEach(role ->
-                authorities.add(new SimpleGrantedAuthority(role.getRole()))
+                authorities.add(new SimpleGrantedAuthority(role.getName()))
             );
             userDetails.setAuthorities(authorities);
         }
