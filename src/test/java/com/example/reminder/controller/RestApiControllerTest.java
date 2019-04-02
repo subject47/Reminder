@@ -1,9 +1,12 @@
 package com.example.reminder.controller;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.example.reminder.domain.Expense;
@@ -107,11 +110,32 @@ public class RestApiControllerTest {
 
     mvc.perform(get("/chartdata?date=1525122000000")
         .contentType(MediaType.APPLICATION_JSON))
-//        	.andDo(print())
         .andExpect(status().isOk())
-        .andExpect(content().string(
-            "{\"cols\":[{\"id\":\"\",\"label\":\"Category\",\"pattern\":\"\",\"type\":\"string\"},{\"id\":\"\",\"label\":\"Amount\",\"pattern\":\"\",\"type\":\"number\"}],\"rows\":[{\"c\":[{\"v\":\"Medicine\",\"f\":null},{\"v\":1000.0,\"f\":null}]},{\"c\":[{\"v\":\"Food\",\"f\":null},{\"v\":2000.0,\"f\":null}]},{\"c\":[{\"v\":\"Electronics\",\"f\":null},{\"v\":3000.0,\"f\":null}]}]}"));
-
+        .andExpect(jsonPath("$.cols", hasSize(2)))
+        .andExpect(jsonPath("$.cols[0].id", is("")))
+        .andExpect(jsonPath("$.cols[0].label", is("Category")))
+        .andExpect(jsonPath("$.cols[0].pattern", is("")))
+        .andExpect(jsonPath("$.cols[0].type", is("string")))
+        .andExpect(jsonPath("$.cols[1].id", is("")))
+        .andExpect(jsonPath("$.cols[1].label", is("Amount")))
+        .andExpect(jsonPath("$.cols[1].pattern", is("")))
+        .andExpect(jsonPath("$.cols[1].type", is("number")))
+        .andExpect(jsonPath("$.rows", hasSize(3)))
+        .andExpect(jsonPath("$.rows[0].c", hasSize(2)))
+        .andExpect(jsonPath("$.rows[0].c[0].v", is("Medicine")))
+        .andExpect(jsonPath("$.rows[0].c[0].f", equalTo(null)))
+        .andExpect(jsonPath("$.rows[0].c[1].v", is(1000.0)))
+        .andExpect(jsonPath("$.rows[0].c[1].f", equalTo(null)))
+        .andExpect(jsonPath("$.rows[1].c", hasSize(2)))
+        .andExpect(jsonPath("$.rows[1].c[0].v", is("Food")))
+        .andExpect(jsonPath("$.rows[1].c[0].f", equalTo(null)))
+        .andExpect(jsonPath("$.rows[1].c[1].v", is(2000.0)))
+        .andExpect(jsonPath("$.rows[1].c[1].f", equalTo(null)))
+        .andExpect(jsonPath("$.rows[2].c", hasSize(2)))
+        .andExpect(jsonPath("$.rows[2].c[0].v", is("Electronics")))
+        .andExpect(jsonPath("$.rows[2].c[0].f", equalTo(null)))
+        .andExpect(jsonPath("$.rows[2].c[1].v", is(3000.0)))
+        .andExpect(jsonPath("$.rows[2].c[1].f", equalTo(null)));
     verify(expenseService).findExpensesByYearAndMonthAndUsername(Year.of(2018), Month.MAY, "user");
   }
 }
