@@ -32,10 +32,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -153,10 +150,10 @@ public class ExpenseControllerTest {
     ExpenseForm form = new ExpenseForm();
     form.setExpense(expense);
 
-    mvc.perform(post("/expense", form).with(csrf()))
-        .andExpect(status().isOk());
-//        .andExpect(view().name(
-//            "redirect:/expenses?year=" + localDate.getYear() + "&month=" + localDate.getMonth().getValue()));
+    mvc.perform(post("/expense").sessionAttr("expenseForm", form).with(csrf()))
+        .andExpect(view()
+            .name("redirect:/expenses?year=" + localDate.getYear() + "&month=" + localDate.getMonth().getValue()))
+        .andExpect(status().is3xxRedirection());
   }
 
 }
