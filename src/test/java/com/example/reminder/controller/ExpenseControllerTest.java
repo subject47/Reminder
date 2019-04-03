@@ -139,18 +139,15 @@ public class ExpenseControllerTest {
 
   @Test
   void expense() throws Exception {
-    int categoryId = 1;
-    Category category = new Category();
-    when(categoryService.getById(categoryId)).thenReturn(category);
-    User user = new User();
-    when(userService.findByUsername(anyString())).thenReturn(user);
+    when(categoryService.getById(1)).thenReturn(new Category());
+    when(userService.findByUsername(anyString())).thenReturn(new User());
     Expense expense = new Expense();
     LocalDate localDate = LocalDate.of(2019, Month.MARCH, 1);
     expense.setDate(DateUtils.asDate(localDate));
     ExpenseForm form = new ExpenseForm();
     form.setExpense(expense);
 
-    mvc.perform(post("/expense").sessionAttr("expenseForm", form).with(csrf()))
+    mvc.perform(post("/expense", form).with(csrf()))
         .andExpect(view()
             .name("redirect:/expenses?year=" + localDate.getYear() + "&month=" + localDate.getMonth().getValue()))
         .andExpect(status().is3xxRedirection());

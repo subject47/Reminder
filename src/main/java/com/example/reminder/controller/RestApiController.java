@@ -1,11 +1,14 @@
 package com.example.reminder.controller;
 
+import static com.google.common.collect.Lists.newArrayList;
+
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
 import com.example.reminder.forms.ChartDataForm;
+import com.example.reminder.forms.ChartDataForm.Column;
+import com.example.reminder.forms.ChartDataForm.Row;
 import com.example.reminder.services.CategoryService;
 import com.example.reminder.services.ExpenseService;
-import com.google.common.collect.Lists;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.Year;
@@ -23,80 +26,73 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class RestApiController {
 
-    @Autowired
-    private ExpenseService expenseService;
+  @Autowired
+  private ExpenseService expenseService;
 
-    @Autowired
-    private CategoryService categoryService;
+  @Autowired
+  private CategoryService categoryService;
 
 
-    @GetMapping(value = "/allexpenses")
-    public List<Expense> listAllExpenses() {
-        List<Expense> expenses = expenseService.listAll();
-        expenses = expenses.stream().map(e -> {
-            e.setUser(null);
-            return e;
+  @GetMapping("/allexpenses")
+  public List<Expense> listAllExpenses() {
+    return expenseService.listAll().stream()
+        .map(e -> {
+          e.setUser(null);
+          return e;
+        })
+        .collect(Collectors.toList());
+  }
+
+
+  @GetMapping("/expensesbycategory")
+  public List<Expense> listAllExpensesGroupedByCategory() {
+    return groupExpensesByCategory(listAllExpenses());
+  }
+
+  // This method creates a Google charts API specific data structure to feed the chart with.
+  @GetMapping("/chartdata")
+  public ChartDataForm generateChartData(@RequestParam("date") String timestamp, Authentication authentication) {
+    LocalDate date =
+        Instant.ofEpochMilli(Long.parseLong(timestamp))
+            .atZone(ZoneId.systemDefault())
+            .toLocalDate();
+    List<Expense> expenses =
+        expenseService.findExpensesByYearAndMonthAndUsername(
+            Year.of(date.getYear()), date.getMonth(), authentication.getName());
+
+    expenses = groupExpensesByCategory(expenses);
+
+    Collection<Column> columns = newArrayList(new Column("Category", "string"), new Column("Amount", "number"));
+
+    Collection<Row> rows = expenses.stream()
+        .map(expense -> {
+          Row.Data dataNumber = new Row.Data(expense.getAmount());
+          Row.Data dataLabel = new Row.Data(expense.getCategory().getName());
+          return new Row(newArrayList(dataLabel, dataNumber));
         }).collect(Collectors.toList());
-        return expenses;
-    }
 
+    return new ChartDataForm(columns, rows);
+  }
 
-    @GetMapping(value = "/expensesbycategory")
-    public List<Expense> listAllExpensesGroupedByCategory() {
-        return groupExpensesByCategory(listAllExpenses());
-    }
+  @GetMapping("/allcategories")
+  public List<Category> listAllCategories() {
+    return categoryService.listAll();
+  }
 
-    // This method creates a Google charts API specific data structure to feed the chart with.
-    @GetMapping(value = "/chartdata")
-    public ChartDataForm generateChartData(@RequestParam("date") String timestamp, Authentication authentication) {
-        LocalDate date = Instant.ofEpochMilli(Long.parseLong(timestamp)).atZone(ZoneId.systemDefault())
-                .toLocalDate();
-        List<Expense> expenses =
-                expenseService.findExpensesByYearAndMonthAndUsername(
-                        Year.of(date.getYear()), date.getMonth(), authentication.getName());
+  private List<Expense> groupExpensesByCategory(List<Expense> expenses) {
+    Map<Integer, List<Expense>> expensesByCategory =
+        expenses.stream().collect(Collectors.groupingBy(e -> e.getCategory().getId()));
 
-        expenses = groupExpensesByCategory(expenses);
-
-        Collection<ChartDataForm.Column> columns =
-                Lists.newArrayList(new ChartDataForm.Column("Category", "string"),
-                        new ChartDataForm.Column("Amount", "number"));
-        Collection<ChartDataForm.Row> rows = Lists.newArrayList();
-
-        expenses.stream().forEach(expense -> {
-            Category category = expense.getCategory();
-            ChartDataForm.Row.Data dataNumber = new ChartDataForm.Row.Data(expense.getAmount());
-            ChartDataForm.Row.Data dataLabel = new ChartDataForm.Row.Data(category.getName());
-            ChartDataForm.Row row = new ChartDataForm.Row(Lists.newArrayList(dataLabel, dataNumber));
-            rows.add(row);
-        });
-        return new ChartDataForm(columns, rows);
-    }
-
-
-    @GetMapping(value = "/allcategories")
-    public List<Category> listAllCategories() {
-        return categoryService.listAll();
-    }
-
-
-    private List<Expense> groupExpensesByCategory(List<Expense> expenses) {
-        Map<Integer, List<Expense>> expensesByCategory =
-                expenses.stream().collect(Collectors.groupingBy(e -> e.getCategory().getId()));
-
-        List<Expense> groupedExpenses = Lists.newArrayList();
-        for (Map.Entry<Integer, List<Expense>> entry : expensesByCategory.entrySet()) {
-            Expense groupExpense = null;
-            for (Expense expense : entry.getValue()) {
-                if (groupExpense == null) {
-                    groupExpense = new Expense();
-                    groupExpense.setCategory(expense.getCategory());
-                    groupExpense.setAmount(0.0);
-                }
-                groupExpense.addAmount(expense.getAmount());
-            }
-            groupedExpenses.add(groupExpense);
-        }
-        return groupedExpenses;
-    }
-
+    List<Expense> groupedExpenses = newArrayList();
+    expensesByCategory.entrySet().forEach(entry -> {
+      final Expense groupExpense = new Expense();
+      groupExpense.setAmount(0.0);
+      entry.getValue().forEach(expense -> {
+        groupExpense.setCategory(expense.getCategory());
+        groupExpense.addAmount(expense.getAmount());
+      });
+      groupedExpenses.add(groupExpense);
+    });
+    return groupedExpenses;
+  }
 }

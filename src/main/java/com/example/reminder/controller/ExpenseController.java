@@ -20,7 +20,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttribute;
 
 @Controller
 public class ExpenseController {
@@ -77,25 +76,22 @@ public class ExpenseController {
 
   @GetMapping("/expense/new")
   public String newExpense(Model model) {
-    List<Category> categories = categoryService.listAll();
-    ExpenseForm form = new ExpenseForm(categories);
+    ExpenseForm form = new ExpenseForm(categoryService.listAll());
     model.addAttribute(EXPENSE_FORM, form);
     return EXPENSE_FORM;
   }
 
   @GetMapping("/expense/edit")
   public String editExpense(@RequestParam Integer id, Model model) {
-    List<Category> categories = categoryService.listAll();
-    Expense expense = expenseService.getById(id);
-    ExpenseForm form = new ExpenseForm(expense, categories);
+    ExpenseForm form =
+        new ExpenseForm(expenseService.getById(id), categoryService.listAll());
     model.addAttribute(EXPENSE_FORM, form);
     return EXPENSE_FORM;
   }
 
   @PostMapping("/expense")
-  public String expense(@SessionAttribute ExpenseForm expenseForm, Authentication authentication) {
-    int categoryId = expenseForm.getCategoryId();
-    Category category = categoryService.getById(categoryId);
+  public String expense(ExpenseForm expenseForm, Authentication authentication) {
+    Category category = categoryService.getById(expenseForm.getCategoryId());
     Expense expense = expenseForm.getExpense();
     expense.setUser(userService.findByUsername(authentication.getName()));
     expense.setCategory(category);

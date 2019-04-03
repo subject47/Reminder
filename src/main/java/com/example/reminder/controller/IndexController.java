@@ -1,11 +1,11 @@
 package com.example.reminder.controller;
 
+import static org.apache.commons.lang3.StringUtils.isEmpty;
 
 import com.example.reminder.domain.Role;
 import com.example.reminder.domain.User;
 import com.example.reminder.services.RoleService;
 import com.example.reminder.services.UserService;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,16 +43,15 @@ public class IndexController {
 
   @PostMapping("/registration")
   public String registration(User user, Model model) {
-    User existingUser = userService.findByUsername(user.getUsername());
-    if (existingUser != null) {
+    if (userService.findByUsername(user.getUsername()) != null) {
       model.addAttribute(MESSAGE, "User exists!");
       return REGISTRATION_TEMPLATE;
     }
-    if (StringUtils.isEmpty(user.getPassword()) || user.getPassword().length() < PASSWORD_LENGTH_MIN) {
+    if (isEmpty(user.getPassword()) || user.getPassword().length() < PASSWORD_LENGTH_MIN) {
       model.addAttribute(MESSAGE, "Password must contain at least " + PASSWORD_LENGTH_MIN + " characters.");
       return REGISTRATION_TEMPLATE;
     }
-    if (StringUtils.isEmpty(user.getRepeatPassword())) {
+    if (isEmpty(user.getRepeatPassword())) {
       model.addAttribute(MESSAGE, "Repeat password");
       return REGISTRATION_TEMPLATE;
     }

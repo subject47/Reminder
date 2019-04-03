@@ -59,48 +59,70 @@ public class RestApiControllerTest {
         .date(
             DateUtils.asDate(
                 LocalDate.of(2018, Month.MAY, 15)))
-        .description("Condoms")
         .category(
             new CategoryBuilder()
                 .id(1)
                 .name("Medicine")
-                .description("Medicine spendings")
                 .build())
         .build();
 
     Expense expense2 = new ExpenseBuilder()
         .user(user)
-        .amount(2000.0)
+        .amount(300.0)
         .date(
             DateUtils.asDate(
-                LocalDate.of(2018, Month.MAY, 1)))
-        .description("Milk")
+                LocalDate.of(2018, Month.MAY, 15)))
         .category(
             new CategoryBuilder()
-                .id(2)
-                .name("Food")
-                .description("Food spendings")
+                .id(1)
+                .name("Medicine")
                 .build())
         .build();
 
     Expense expense3 = new ExpenseBuilder()
         .user(user)
+        .amount(2000.0)
+        .date(
+            DateUtils.asDate(
+                LocalDate.of(2018, Month.MAY, 1)))
+        .category(
+            new CategoryBuilder()
+                .id(2)
+                .name("Food")
+                .build())
+        .build();
+
+    Expense expense4 = new ExpenseBuilder()
+        .user(user)
+        .amount(1500.0)
+        .date(
+            DateUtils.asDate(
+                LocalDate.of(2018, Month.MAY, 1)))
+        .category(
+            new CategoryBuilder()
+                .id(2)
+                .name("Food")
+                .build())
+        .build();
+
+    Expense expense5 = new ExpenseBuilder()
+        .user(user)
         .amount(3000.0)
         .date(
             DateUtils.asDate(
                 LocalDate.of(2018, Month.MAY, 31)))
-        .description("TV")
         .category(
             new CategoryBuilder()
                 .id(3)
                 .name("Electronics")
-                .description("Electronics spendings")
                 .build())
         .build();
 
     expenses.add(expense1);
     expenses.add(expense2);
     expenses.add(expense3);
+    expenses.add(expense4);
+    expenses.add(expense5);
   }
 
   @Test
@@ -124,12 +146,12 @@ public class RestApiControllerTest {
         .andExpect(jsonPath("$.rows[0].c", hasSize(2)))
         .andExpect(jsonPath("$.rows[0].c[0].v", is("Medicine")))
         .andExpect(jsonPath("$.rows[0].c[0].f", equalTo(null)))
-        .andExpect(jsonPath("$.rows[0].c[1].v", is(1000.0)))
+        .andExpect(jsonPath("$.rows[0].c[1].v", is(1300.0)))
         .andExpect(jsonPath("$.rows[0].c[1].f", equalTo(null)))
         .andExpect(jsonPath("$.rows[1].c", hasSize(2)))
         .andExpect(jsonPath("$.rows[1].c[0].v", is("Food")))
         .andExpect(jsonPath("$.rows[1].c[0].f", equalTo(null)))
-        .andExpect(jsonPath("$.rows[1].c[1].v", is(2000.0)))
+        .andExpect(jsonPath("$.rows[1].c[1].v", is(3500.0)))
         .andExpect(jsonPath("$.rows[1].c[1].f", equalTo(null)))
         .andExpect(jsonPath("$.rows[2].c", hasSize(2)))
         .andExpect(jsonPath("$.rows[2].c[0].v", is("Electronics")))
