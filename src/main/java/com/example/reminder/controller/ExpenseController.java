@@ -20,10 +20,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 @Controller
-@SessionAttributes("expenseForm")
 public class ExpenseController {
 
   private static final String EXPENSE_FORM = "expenseForm";
@@ -94,7 +93,7 @@ public class ExpenseController {
   }
 
   @PostMapping("/expense")
-  public String expense(ExpenseForm expenseForm, Authentication authentication) {
+  public String expense(@SessionAttribute ExpenseForm expenseForm, Authentication authentication) {
     int categoryId = expenseForm.getCategoryId();
     Category category = categoryService.getById(categoryId);
     Expense expense = expenseForm.getExpense();
@@ -104,5 +103,4 @@ public class ExpenseController {
     LocalDate localDate = DateUtils.asLocalDate(expense.getDate());
     return "redirect:/expenses?year=" + localDate.getYear() + "&month=" + localDate.getMonth().getValue();
   }
-
 }
