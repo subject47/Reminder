@@ -9,6 +9,8 @@ import com.example.reminder.services.UserService;
 import com.example.reminder.utils.DateUtils;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
@@ -25,6 +27,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ExpenseController {
 
   private static final String EXPENSE_FORM = "expenseForm";
+
+  private static final String DATE_FORMAT = "yyyy-MM-dd";
+  private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DATE_FORMAT);
 
   @Autowired
   private UserService userService;
@@ -90,11 +95,14 @@ public class ExpenseController {
   }
 
   @PostMapping("/expense")
-  public String expense(ExpenseForm expenseForm, Authentication authentication) {
+  public String expense(ExpenseForm expenseForm, Authentication authentication) throws ParseException {
     Category category = categoryService.getById(expenseForm.getCategoryId());
-    Expense expense = expenseForm.getExpense();
+    Expense expense = new Expense();
+    expense.setAmount(expenseForm.getAmount());
+    expense.setDate(DATE_FORMATTER.parse(expenseForm.getDate()));
     expense.setUser(userService.findByUsername(authentication.getName()));
     expense.setCategory(category);
+    expense.setDescription(expenseForm.getDescription());
     expenseService.save(expense);
     LocalDate localDate = DateUtils.asLocalDate(expense.getDate());
     return "redirect:/expenses?year=" + localDate.getYear() + "&month=" + localDate.getMonth().getValue();

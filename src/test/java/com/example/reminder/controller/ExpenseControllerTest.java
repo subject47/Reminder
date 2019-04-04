@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -141,16 +142,14 @@ public class ExpenseControllerTest {
   void expense() throws Exception {
     when(categoryService.getById(1)).thenReturn(new Category());
     when(userService.findByUsername(anyString())).thenReturn(new User());
-    Expense expense = new Expense();
-    LocalDate localDate = LocalDate.of(2019, Month.MARCH, 1);
-    expense.setDate(DateUtils.asDate(localDate));
-    ExpenseForm form = new ExpenseForm();
-    form.setExpense(expense);
-
-    mvc.perform(post("/expense", form).with(csrf()))
-        .andExpect(view()
-            .name("redirect:/expenses?year=" + localDate.getYear() + "&month=" + localDate.getMonth().getValue()))
-        .andExpect(status().is3xxRedirection());
+    mvc.perform(post("/expense")
+        .param("categoryId", "1")
+        .param("amount", "9000.0")
+        .param("date", "2018-04-16")
+        .param("description", "expense description").with(csrf()))
+        .andDo(print())
+        .andExpect(status().is3xxRedirection())
+        .andExpect(view().name("redirect:/expenses?year=" + "2018" + "&month=" + "4"));
   }
 
 }
