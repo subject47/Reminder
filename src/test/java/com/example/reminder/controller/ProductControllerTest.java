@@ -61,6 +61,7 @@ public class ProductControllerTest {
     // given
     int productId = 1;
     Product product = new Product();
+    product.setName("TESTNAME");
     Mockito.when(productService.save(product)).thenAnswer(i -> {
         Product p = i.getArgument(0);
         p.setId(productId);

@@ -3,14 +3,17 @@ package com.example.reminder.forms;
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
 import com.google.common.base.Objects;
+import java.util.Date;
 import java.util.List;
 
 public class ExpenseForm {
 
   private Expense expense;
-
   private List<Category> categories;
   private int categoryId;
+  private Double amount;
+  private String date;
+  private String description;
 
   public ExpenseForm() {}
 
@@ -47,6 +50,30 @@ public class ExpenseForm {
 
   public void setCategoryId(int categoryId) {
     this.categoryId = categoryId;
+  }
+
+  public void setAmount(Double amount) {
+    this.amount = amount;
+  }
+
+  public void setDate(String date) {
+    this.date = date;
+  }
+
+  public Double getAmount() {
+    return amount;
+  }
+
+  public String getDate() {
+    return date;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
   }
 
   @Override

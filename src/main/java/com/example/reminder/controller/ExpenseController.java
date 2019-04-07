@@ -9,7 +9,8 @@ import com.example.reminder.services.UserService;
 import com.example.reminder.utils.DateUtils;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
@@ -27,37 +28,40 @@ public class ExpenseController {
 
   private static final String EXPENSE_FORM = "expenseForm";
 
+  private static final String DATE_FORMAT = "yyyy-MM-dd";
+  private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DATE_FORMAT);
+
   @Autowired
   private UserService userService;
-	
+
   @Autowired
   private ExpenseService expenseService;
 
   @Autowired
   private CategoryService categoryService;
 
-  
+
   private static final List<String> YEARS =
-		  Lists.newArrayList("2018", "2019", "2020", "2021", "2022");
-  private static final ImmutableMap<Integer, String> MONTHS = 
+      Lists.newArrayList("2018", "2019", "2020", "2021", "2022");
+  private static final ImmutableMap<Integer, String> MONTHS =
       ImmutableMap.<Integer, String>builder()
-		.put(Month.JANUARY.getValue(), "January")
-		.put(Month.FEBRUARY.getValue(), "February")
-		.put(Month.MARCH.getValue(), "March")
-		.put(Month.APRIL.getValue(), "April")
-		.put(Month.MAY.getValue(), "May")
-		.put(Month.JUNE.getValue(), "June")
-		.put(Month.JULY.getValue(), "July")
-		.put(Month.AUGUST.getValue(), "August")
-		.put(Month.SEPTEMBER.getValue(), "September")
-		.put(Month.OCTOBER.getValue(), "October")
-		.put(Month.NOVEMBER.getValue(), "November")
-		.put(Month.DECEMBER.getValue(), "December")
-		.build();
+          .put(Month.JANUARY.getValue(), "January")
+          .put(Month.FEBRUARY.getValue(), "February")
+          .put(Month.MARCH.getValue(), "March")
+          .put(Month.APRIL.getValue(), "April")
+          .put(Month.MAY.getValue(), "May")
+          .put(Month.JUNE.getValue(), "June")
+          .put(Month.JULY.getValue(), "July")
+          .put(Month.AUGUST.getValue(), "August")
+          .put(Month.SEPTEMBER.getValue(), "September")
+          .put(Month.OCTOBER.getValue(), "October")
+          .put(Month.NOVEMBER.getValue(), "November")
+          .put(Month.DECEMBER.getValue(), "December")
+          .build();
 
 
   @GetMapping("/dates")
-  public String dates(Model model) {	  
+  public String dates(Model model) {
     model.addAttribute("years", YEARS);
     model.addAttribute("months", MONTHS);
     model.addAttribute("year", 1);
@@ -66,41 +70,41 @@ public class ExpenseController {
   }
 
   @GetMapping("/expenses")
-  public String expenses(@RequestParam Integer year, @RequestParam Integer month, Model model, Authentication authentication) {	  
-	List<Expense> expenses = 
-			expenseService.findExpensesByYearAndMonthAndUsername(
-					Year.of(year), Month.of(month), authentication.getName());
+  public String expenses(@RequestParam Integer year, @RequestParam Integer month, Model model,
+      Authentication authentication) {
+    List<Expense> expenses =
+        expenseService.findExpensesByYearAndMonthAndUsername(
+            Year.of(year), Month.of(month), authentication.getName());
     model.addAttribute("expenses", expenses);
     return "expenseList";
   }
 
   @GetMapping("/expense/new")
   public String newExpense(Model model) {
-    List<Category> categories = categoryService.listAll();
-    ExpenseForm form = new ExpenseForm(categories);
+    ExpenseForm form = new ExpenseForm(categoryService.listAll());
     model.addAttribute(EXPENSE_FORM, form);
     return EXPENSE_FORM;
   }
 
   @GetMapping("/expense/edit")
   public String editExpense(@RequestParam Integer id, Model model) {
-    List<Category> categories = categoryService.listAll();
-    Expense expense = expenseService.getById(id);
-    ExpenseForm form = new ExpenseForm(expense, categories);
+    ExpenseForm form =
+        new ExpenseForm(expenseService.getById(id), categoryService.listAll());
     model.addAttribute(EXPENSE_FORM, form);
     return EXPENSE_FORM;
   }
 
   @PostMapping("/expense")
-  public String expense(ExpenseForm expenseForm, Authentication authentication) {
-    int categoryId = expenseForm.getCategoryId();
-    Category category = categoryService.getById(categoryId);
-    Expense expense = expenseForm.getExpense();
+  public String expense(ExpenseForm expenseForm, Authentication authentication) throws ParseException {
+    Category category = categoryService.getById(expenseForm.getCategoryId());
+    Expense expense = new Expense();
+    expense.setAmount(expenseForm.getAmount());
+    expense.setDate(DATE_FORMATTER.parse(expenseForm.getDate()));
     expense.setUser(userService.findByUsername(authentication.getName()));
     expense.setCategory(category);
+    expense.setDescription(expenseForm.getDescription());
     expenseService.save(expense);
     LocalDate localDate = DateUtils.asLocalDate(expense.getDate());
     return "redirect:/expenses?year=" + localDate.getYear() + "&month=" + localDate.getMonth().getValue();
   }
-
 }

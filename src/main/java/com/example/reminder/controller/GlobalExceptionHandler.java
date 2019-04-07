@@ -2,10 +2,10 @@ package com.example.reminder.controller;
 
 import java.util.logging.Logger;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-@RestControllerAdvice
+@ControllerAdvice
 public class GlobalExceptionHandler {
 
   private static final Logger log = Logger.getLogger(GlobalExceptionHandler.class.getName());
