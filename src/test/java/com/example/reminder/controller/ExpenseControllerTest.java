@@ -149,7 +149,6 @@ public class ExpenseControllerTest {
         .param("description", "expense description").with(csrf()))
         .andDo(print())
         .andExpect(status().is3xxRedirection())
-        .andExpect(view().name("redirect:/expenses?year=" + "2018" + "&month=" + "4"));
+        .andExpect(view().name("redirect:/expenses?year=2018&month=4"));
   }
-
 }

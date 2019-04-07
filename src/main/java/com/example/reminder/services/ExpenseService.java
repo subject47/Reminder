@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ public class ExpenseService implements CRUDService<Expense> {
     return findAllExpensesByYearAndMonth(year, month)
         .stream()
         .filter(e -> e.getUser().getUsername().equals(username))
-        .sorted((e1, e2) -> e1.getDate().compareTo(e2.getDate()))
+        .sorted(Comparator.comparing(Expense::getDate))
         .collect(Collectors.toList());
   }
 
