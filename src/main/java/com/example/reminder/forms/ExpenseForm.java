@@ -17,12 +17,6 @@ public class ExpenseForm {
 
   public ExpenseForm() {}
 
-  public ExpenseForm(Expense expense, List<Category> categories) {
-    this.expense = expense;
-    this.categoryId = expense.getCategory().getId();
-    this.categories = categories;
-  }
-
   public ExpenseForm(List<Category> categories) {
     this.categories = categories;
     this.expense = new Expense();
@@ -77,21 +71,6 @@ public class ExpenseForm {
   }
 
   @Override
-  public int hashCode() {
-    if (categories == null) {
-      return Objects.hashCode(expense, categoryId);
-    } else {
-      Object[] objects = new Object[categories.size() + 2];
-      for (int i = 0; i < categories.size(); i++) {
-        objects[i] = categories.get(i);
-      }
-      objects[categories.size()] = expense;
-      objects[categories.size() + 1] = categoryId;
-      return Objects.hashCode(objects);
-    }
-  }
-
-  @Override
   public boolean equals(Object o) {
     if (o == null) {
       return false;
@@ -108,8 +87,11 @@ public class ExpenseForm {
         return false;
       }
     }
-    return Objects.equal(expense, other.getExpense())
-        && Objects.equal(categoryId, other.getCategoryId());
+    return Objects.equal(categories, other.getCategories())
+        && Objects.equal(categoryId, other.getCategoryId())
+        && Objects.equal(amount, other.getAmount())
+        && Objects.equal(date, other.getDate())
+        && Objects.equal(description, other.getDescription());
   }
 
 }

@@ -22,6 +22,7 @@ import com.example.reminder.util.TestUtils.CategoryBuilder;
 import com.example.reminder.util.TestUtils.ExpenseBuilder;
 import com.example.reminder.utils.DateUtils;
 import com.google.common.collect.Lists;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
@@ -42,6 +43,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @WithMockUser
 public class ExpenseControllerTest {
+
+  private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
 
   private static final int YEAR = 2018;
   private static final int MONTH = 5;
@@ -120,7 +123,7 @@ public class ExpenseControllerTest {
 
     mvc.perform(get("/expense/new"))
         .andExpect(status().isOk())
-        .andExpect(model().attribute("expenseForm", new ExpenseForm(categories)));
+        .andExpect(model().attribute("expenseForm", buildExpenseForm()));
     verify(categoryService).listAll();
   }
 
@@ -131,7 +134,7 @@ public class ExpenseControllerTest {
 
     mvc.perform(get("/expense/edit?id=1"))
         .andExpect(status().isOk())
-        .andExpect(model().attribute("expenseForm", new ExpenseForm(expense, categories)))
+        .andExpect(model().attribute("expenseForm", buildExpenseForm()))
         .andExpect(view().name("expenseForm"));
 
     verify(categoryService).listAll();
@@ -150,5 +153,16 @@ public class ExpenseControllerTest {
         .andDo(print())
         .andExpect(status().is3xxRedirection())
         .andExpect(view().name("redirect:/expenses?year=2018&month=4"));
+  }
+
+  private ExpenseForm buildExpenseForm() {
+    ExpenseForm form = new ExpenseForm();
+    form.setExpense(expense);
+    form.setCategories(categories);
+    form.setAmount(expense.getAmount());
+    form.setDate(DATE_FORMATTER.format(expense.getDate()));
+    form.setDescription(expense.getDescription());
+    form.setCategoryId(expense.getCategory().getId());
+    return form;
   }
 }

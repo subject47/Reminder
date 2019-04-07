@@ -81,15 +81,22 @@ public class ExpenseController {
 
   @GetMapping("/expense/new")
   public String newExpense(Model model) {
-    ExpenseForm form = new ExpenseForm(categoryService.listAll());
+    ExpenseForm form = new ExpenseForm();
+    form.setCategories(categoryService.listAll());
     model.addAttribute(EXPENSE_FORM, form);
     return EXPENSE_FORM;
   }
 
   @GetMapping("/expense/edit")
   public String editExpense(@RequestParam Integer id, Model model) {
-    ExpenseForm form =
-        new ExpenseForm(expenseService.getById(id), categoryService.listAll());
+    Expense expense = expenseService.getById(id);
+    ExpenseForm form = new ExpenseForm();
+    form.setExpense(expense);
+    form.setCategories(categoryService.listAll());
+    form.setAmount(expense.getAmount());
+    form.setDate(DATE_FORMATTER.format(expense.getDate()));
+    form.setDescription(expense.getDescription());
+    form.setCategoryId(expense.getCategory().getId());
     model.addAttribute(EXPENSE_FORM, form);
     return EXPENSE_FORM;
   }
@@ -97,7 +104,7 @@ public class ExpenseController {
   @PostMapping("/expense")
   public String expense(ExpenseForm expenseForm, Authentication authentication) throws ParseException {
     Category category = categoryService.getById(expenseForm.getCategoryId());
-    Expense expense = new Expense();
+    Expense expense = expenseForm.getExpense() == null ? new Expense() : expenseForm.getExpense();
     expense.setAmount(expenseForm.getAmount());
     expense.setDate(DATE_FORMATTER.parse(expenseForm.getDate()));
     expense.setUser(userService.findByUsername(authentication.getName()));
