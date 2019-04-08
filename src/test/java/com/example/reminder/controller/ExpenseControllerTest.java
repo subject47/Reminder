@@ -27,6 +27,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.List;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -118,17 +119,19 @@ public class ExpenseControllerTest {
   }
 
   @Test
-  public void newExpense() throws Exception {
+  public void expense_new() throws Exception {
     when(categoryService.listAll()).thenReturn(categories);
+    ExpenseForm form = new ExpenseForm();
+    form.setCategories(categories);
 
     mvc.perform(get("/expense/new"))
         .andExpect(status().isOk())
-        .andExpect(model().attribute("expenseForm", buildExpenseForm()));
+        .andExpect(model().attribute("expenseForm", Matchers.equalTo(form)));
     verify(categoryService).listAll();
   }
 
   @Test
-  void editExpense() throws Exception {
+  void expense_edit() throws Exception {
     when(categoryService.listAll()).thenReturn(categories);
     when(expenseService.getById(1)).thenReturn(expense);
 
@@ -142,7 +145,7 @@ public class ExpenseControllerTest {
   }
 
   @Test
-  void expense() throws Exception {
+  void expense_saveOrUpdate() throws Exception {
     when(categoryService.getById(1)).thenReturn(new Category());
     when(userService.findByUsername(anyString())).thenReturn(new User());
     mvc.perform(post("/expense")

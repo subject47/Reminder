@@ -2,13 +2,13 @@ package com.example.reminder.domain;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.validation.constraints.NotNull;
 import org.springframework.format.annotation.DateTimeFormat;
 import com.example.reminder.utils.DateUtils;
-import com.google.common.base.Objects;
 
 @Entity
 public class Expense extends AbstractDomainClass {
@@ -89,27 +89,23 @@ public class Expense extends AbstractDomainClass {
 
   @Override
   public int hashCode() {
-    return (this.id == null) ? Objects.hashCode(amount, date, description, category) : this.id;
+    return Objects.hash(user, amount, date, description, category);
   }
 
   @Override
   public boolean equals(Object o) {
-    if (o == null) {
-      return false;
-    }
-    if (!(o instanceof Expense)) {
+    if (o == null || o.getClass() != this.getClass()) {
       return false;
     }
     if (this == o) {
       return true;
     }
     Expense other = (Expense) o;
-    if (this.id != null && this.id.equals(other.getId())) {
-    	return true;
-    }
-    return Objects.equal(amount, other.getAmount()) && Objects.equal(date, other.getDate())
-        && Objects.equal(description, other.getDescription())
-        && Objects.equal(category, other.getCategory());
+    return Objects.equals(user, other.getUser())
+        && Objects.equals(amount, other.getAmount())
+        && Objects.equals(date, other.getDate())
+        && Objects.equals(description, other.getDescription())
+        && Objects.equals(category, other.getCategory());
   }
 
 }

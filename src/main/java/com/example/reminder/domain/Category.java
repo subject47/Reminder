@@ -49,19 +49,13 @@ public class Category extends AbstractDomainClass {
 
   @Override
   public boolean equals(Object o) {
-    if (o == null) {
-      return false;
-    }
-    if (!(o instanceof Category)) {
+    if (o == null || o.getClass() != this.getClass()) {
       return false;
     }
     if (this == o) {
       return true;
     }
     Category other = (Category) o;
-    if (this.id != null && this.id.equals(other.getId())) {
-    	return true;
-    }
     return Objects.equal(name, other.getName())
         && Objects.equal(description, other.getDescription());
   }

@@ -29,7 +29,7 @@ public class ExpenseController {
   private static final String EXPENSE_FORM = "expenseForm";
 
   private static final String DATE_FORMAT = "yyyy-MM-dd";
-  private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DATE_FORMAT);
+  private final SimpleDateFormat dateFormatter = new SimpleDateFormat(DATE_FORMAT);
 
   @Autowired
   private UserService userService;
@@ -70,7 +70,7 @@ public class ExpenseController {
   }
 
   @GetMapping("/expenses")
-  public String expenses(@RequestParam Integer year, @RequestParam Integer month, Model model,
+  public String expense(@RequestParam Integer year, @RequestParam Integer month, Model model,
       Authentication authentication) {
     List<Expense> expenses =
         expenseService.findExpensesByYearAndMonthAndUsername(
@@ -80,7 +80,7 @@ public class ExpenseController {
   }
 
   @GetMapping("/expense/new")
-  public String newExpense(Model model) {
+  public String expense(Model model) {
     ExpenseForm form = new ExpenseForm();
     form.setCategories(categoryService.listAll());
     model.addAttribute(EXPENSE_FORM, form);
@@ -88,13 +88,13 @@ public class ExpenseController {
   }
 
   @GetMapping("/expense/edit")
-  public String editExpense(@RequestParam Integer id, Model model) {
+  public String expense(@RequestParam Integer id, Model model) {
     Expense expense = expenseService.getById(id);
     ExpenseForm form = new ExpenseForm();
     form.setExpense(expense);
     form.setCategories(categoryService.listAll());
     form.setAmount(expense.getAmount());
-    form.setDate(DATE_FORMATTER.format(expense.getDate()));
+    form.setDate(dateFormatter.format(expense.getDate()));
     form.setDescription(expense.getDescription());
     form.setCategoryId(expense.getCategory().getId());
     model.addAttribute(EXPENSE_FORM, form);
@@ -106,7 +106,7 @@ public class ExpenseController {
     Category category = categoryService.getById(expenseForm.getCategoryId());
     Expense expense = expenseForm.getExpense() == null ? new Expense() : expenseForm.getExpense();
     expense.setAmount(expenseForm.getAmount());
-    expense.setDate(DATE_FORMATTER.parse(expenseForm.getDate()));
+    expense.setDate(dateFormatter.parse(expenseForm.getDate()));
     expense.setUser(userService.findByUsername(authentication.getName()));
     expense.setCategory(category);
     expense.setDescription(expenseForm.getDescription());

@@ -2,20 +2,20 @@ package com.example.reminder.forms;
 
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
-import com.google.common.base.Objects;
-import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class ExpenseForm {
 
-  private Expense expense;
+  private Expense expense = new Expense();
   private List<Category> categories;
   private int categoryId;
   private Double amount;
   private String date;
   private String description;
 
-  public ExpenseForm() {}
+  public ExpenseForm() {
+  }
 
   public ExpenseForm(List<Category> categories) {
     this.categories = categories;
@@ -71,27 +71,24 @@ public class ExpenseForm {
   }
 
   @Override
+  public int hashCode() {
+    return Objects.hash(expense, categories, expense, categoryId, amount, date, description);
+  }
+
+  @Override
   public boolean equals(Object o) {
-    if (o == null) {
+    if (o == null || this.getClass() != o.getClass()) {
       return false;
     }
-    if (this == o || this.getClass() == o.getClass()) {
+    if (this == o) {
       return true;
     }
     ExpenseForm other = (ExpenseForm) o;
-    if (categories.size() != other.getCategories().size()) {
-      return false;
-    }
-    for (Category category : categories) {
-      if (!other.getCategories().contains(category)) {
-        return false;
-      }
-    }
-    return Objects.equal(categories, other.getCategories())
-        && Objects.equal(categoryId, other.getCategoryId())
-        && Objects.equal(amount, other.getAmount())
-        && Objects.equal(date, other.getDate())
-        && Objects.equal(description, other.getDescription());
+    return Objects.equals(expense, other.getExpense())
+        && Objects.equals(categories, other.getCategories())
+        && Objects.equals(categoryId, other.getCategoryId())
+        && Objects.equals(amount, other.getAmount())
+        && Objects.equals(date, other.getDate())
+        && Objects.equals(description, other.getDescription());
   }
-
 }
