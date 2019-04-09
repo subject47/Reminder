@@ -22,6 +22,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class ExpenseController {
@@ -77,6 +78,17 @@ public class ExpenseController {
             Year.of(year), Month.of(month), authentication.getName());
     model.addAttribute("expenses", expenses);
     return "expenseList";
+  }
+
+  @GetMapping("/datagrid")
+  @ResponseBody
+  public List<List<Object>> datagrid(@RequestParam Integer year, @RequestParam Integer month, Model model,
+      Authentication authentication) {
+    List<List<Object>> dataGrid =
+        expenseService.buildDataGrid(
+            Year.of(year), Month.of(month), authentication.getName());
+    model.addAttribute("data", dataGrid);
+    return dataGrid;
   }
 
   @GetMapping("/expense/new")

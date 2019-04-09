@@ -11,7 +11,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import com.example.reminder.utils.DateUtils;
 
 @Entity
-public class Expense extends AbstractDomainClass {
+public class Expense extends AbstractDomainClass implements Comparable<Expense> {
 
   private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -108,4 +108,8 @@ public class Expense extends AbstractDomainClass {
         && Objects.equals(category, other.getCategory());
   }
 
+  @Override
+  public int compareTo(Expense o) {
+    return date.compareTo(o.getDate());
+  }
 }
