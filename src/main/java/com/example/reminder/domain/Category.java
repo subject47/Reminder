@@ -4,10 +4,11 @@ import javax.persistence.Entity;
 import com.google.common.base.Objects;
 
 @Entity
-public class Category extends AbstractDomainClass {
+public class Category extends AbstractDomainClass implements Comparable<Category> {
 
   private String name;
   private String description;
+  private Integer priority = 0;
 
   public Category() {}
 
@@ -37,6 +38,14 @@ public class Category extends AbstractDomainClass {
     this.description = description;
   }
 
+  public Integer getPriority() {
+    return priority;
+  }
+
+  public void setPriority(Integer priority) {
+    this.priority = priority;
+  }
+
   @Override
   public String toString() {
     return name + "(" + description + ")";
@@ -58,5 +67,14 @@ public class Category extends AbstractDomainClass {
     Category other = (Category) o;
     return Objects.equal(name, other.getName())
         && Objects.equal(description, other.getDescription());
+  }
+
+  @Override
+  public int compareTo(Category o) {
+    int diff = priority.compareTo(o.getPriority());
+    if (diff == 0) {
+      return name.compareTo(o.name);
+    }
+    return diff;
   }
 }

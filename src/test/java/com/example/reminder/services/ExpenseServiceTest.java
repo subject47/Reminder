@@ -23,6 +23,8 @@ public class ExpenseServiceTest {
 
   @MockBean
   private ExpenseRepository expenseRepository;
+  @MockBean
+  private CategoryService categoryService;
 
   private ExpenseService sut;
 
@@ -32,7 +34,7 @@ public class ExpenseServiceTest {
 
   @BeforeEach
   void setup() {
-    sut = new ExpenseService(expenseRepository);
+    sut = new ExpenseService(expenseRepository, categoryService);
   }
 
   @Test

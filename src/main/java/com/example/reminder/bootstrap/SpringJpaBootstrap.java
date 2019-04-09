@@ -111,21 +111,25 @@ public class SpringJpaBootstrap implements ApplicationListener<ContextRefreshedE
     Category category = new Category();
     category.setName(Product.FOOD);
     category.setDescription("Food spendings");
+    category.setPriority(1);
     categoryService.save(category);
 
     Category category2 = new Category();
     category2.setName(Product.ELECTRONICS);
     category2.setDescription("Electronics spendings");
+    category2.setPriority(4);
     categoryService.save(category2);
 
     Category category3 = new Category();
     category3.setName(Product.MEDICINE);
     category3.setDescription("Medicine spendings");
+    category3.setPriority(2);
     categoryService.save(category3);
 
     Category category4 = new Category();
     category4.setName(Product.UTILITIES);
     category4.setDescription("Utilities spendings");
+    category4.setPriority(3);
     categoryService.save(category4);
   }
 
