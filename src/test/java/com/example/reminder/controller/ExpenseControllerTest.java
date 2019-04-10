@@ -14,6 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
 import com.example.reminder.domain.User;
+import com.example.reminder.forms.DataGridForm;
 import com.example.reminder.forms.ExpenseForm;
 import com.example.reminder.services.CategoryService;
 import com.example.reminder.services.ExpenseService;
@@ -156,6 +157,21 @@ public class ExpenseControllerTest {
         .andDo(print())
         .andExpect(status().is3xxRedirection())
         .andExpect(view().name("redirect:/expenses?year=2018&month=4"));
+  }
+
+  @Test
+  void datagrid() throws Exception {
+    Year year = Year.of(YEAR);
+    Month month = Month.of(MONTH);
+    DataGridForm form = new DataGridForm();
+    when(expenseService.buildDataGrid(year, month, "user")).thenReturn(form);
+
+    mvc.perform(get("/datagrid?year=2018&month=5"))
+        .andExpect(status().isOk())
+        .andExpect(model().attribute("data", form))
+        .andExpect(view().name("datagrid"));
+
+    verify(expenseService).buildDataGrid(year, month, "user");
   }
 
   private ExpenseForm buildExpenseForm() {
