@@ -63,19 +63,14 @@ public class ExpenseService implements CRUDService<Expense> {
   }
 
   public List<List<Object>> buildDataGrid(Year year, Month month, String username) {
-    List<Expense> expenses =
-        findExpensesByYearAndMonthAndUsername(year, month, username).stream()
-            .sorted()
-            .collect(Collectors.toList());
+    List<Expense> expenses = findExpensesByYearAndMonthAndUsername(year, month, username);
     List<Category> categories = categoryService.listAll();
     int numberOfRows = month.length(year.isLeap()) + 2;
     int numberOfColumns = categories.size() + 2;
     Map<Date, Double> amountGroupedByDate = groupAmountsByDates(expenses);
     List<List<Object>> grid = initializeDataGrid(numberOfRows, numberOfColumns);
     grid.set(0, buildDataGridHeader(categories));
-    expenses.stream()
-        .sorted()
-        .forEach(e -> addRowToDataGrid(e, grid, amountGroupedByDate));
+    expenses.stream().forEach(e -> addRowToDataGrid(e, grid, amountGroupedByDate));
     grid.set(numberOfRows - 1, buildDataGridFooter(grid));
     return grid;
   }
