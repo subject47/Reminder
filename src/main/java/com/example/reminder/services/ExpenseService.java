@@ -2,6 +2,7 @@ package com.example.reminder.services;
 
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
+import com.example.reminder.forms.DataGridForm;
 import com.example.reminder.repositories.ExpenseRepository;
 import com.example.reminder.utils.DateUtils;
 import com.google.common.collect.Lists;
@@ -62,22 +63,24 @@ public class ExpenseService implements CRUDService<Expense> {
         .collect(Collectors.toList());
   }
 
-  public List<List<Object>> buildDataGrid(Year year, Month month, String username) {
+  public DataGridForm buildDataGrid(Year year, Month month, String username) {
     List<Expense> expenses = findExpensesByYearAndMonthAndUsername(year, month, username);
     List<Category> categories = categoryService.listAll();
-    int numberOfRows = month.length(year.isLeap()) + 2;
+    int numberOfRows = month.length(year.isLeap());
     int numberOfColumns = categories.size() + 2;
     Map<Date, Double> amountGroupedByDate = groupAmountsByDates(expenses);
     List<List<Object>> grid = initializeDataGrid(numberOfRows, numberOfColumns);
-    grid.set(0, buildDataGridHeader(categories));
+    DataGridForm form = new DataGridForm();
     expenses.stream().forEach(e -> addRowToDataGrid(e, grid, amountGroupedByDate));
-    grid.set(numberOfRows - 1, buildDataGridFooter(grid));
-    return grid;
+    form.setHeader(buildDataGridHeader(categories));
+    form.setRows(grid);
+    form.setFooter(buildDataGridFooter(grid));
+    return form;
   }
 
   private List<Object> buildDataGridHeader(List<Category> categories) {
     List<Object> header = Lists.newArrayListWithCapacity(categories.size() + 2);
-    header.add("");  // day of month column
+    header.add("Date");
     header.addAll(categories.stream()
         .sorted()
         .map(Category::getName)
@@ -89,7 +92,7 @@ public class ExpenseService implements CRUDService<Expense> {
   private void addRowToDataGrid(Expense expense, List<List<Object>> grid, Map<Date, Double> totalAmountByDate) {
     int dayOfMonth = DateUtils.asLocalDate(expense.getDate()).getDayOfMonth();
     double totalAmount = totalAmountByDate.get(expense.getDate());
-    List<Object> row = grid.get(dayOfMonth);
+    List<Object> row = grid.get(dayOfMonth - 1);
     int columnIndex = expense.getCategory().getPriority();
     double amount = expense.getAmount();
     if (row.get(columnIndex) instanceof Double) {
@@ -136,7 +139,7 @@ public class ExpenseService implements CRUDService<Expense> {
 
   private List<List<Object>> initializeDataGrid(int numberOfRows, int numberOfColumns) {
     List<List<Object>> grid = Lists.newArrayListWithCapacity(numberOfRows);
-    for (int i = 0; i < numberOfRows; i++) {
+    for (int i = 1; i <= numberOfRows; i++) {
       List<Object> row = Lists.newArrayListWithCapacity(numberOfColumns);
       for (int j = 0; j < numberOfColumns; j++) {
         row.add("");

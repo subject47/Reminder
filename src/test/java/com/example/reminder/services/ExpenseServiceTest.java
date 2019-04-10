@@ -11,6 +11,7 @@ import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
 import com.example.reminder.domain.Product;
 import com.example.reminder.domain.User;
+import com.example.reminder.forms.DataGridForm;
 import com.example.reminder.repositories.ExpenseRepository;
 import com.example.reminder.utils.DateUtils;
 import java.time.LocalDate;
@@ -86,10 +87,10 @@ public class ExpenseServiceTest {
     // given
     Date firstDay = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1));
     Date lastDay = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 31));
-    when(categoryService.listAll()).thenReturn(mockCategories());
+    when(categoryService.listAll()).thenReturn(buildCategories());
     when(expenseRepository.findByDateBetween(firstDay, lastDay)).thenReturn(expensesForMay());
     // when
-    List<List<Object>> result = sut.buildDataGrid(Year.of(2018), Month.MAY, USERNAME);
+    DataGridForm result = sut.buildDataGrid(Year.of(2018), Month.MAY, USERNAME);
 
     assertThat(result).isEqualTo(expectedDataForMay());
   }
@@ -99,12 +100,12 @@ public class ExpenseServiceTest {
     // given
     Date firstDay = DateUtils.asDate(LocalDate.of(2016, Month.FEBRUARY, 1));
     Date lastDay = DateUtils.asDate(LocalDate.of(2016, Month.FEBRUARY, 29));
-    when(categoryService.listAll()).thenReturn(mockCategories());
+    when(categoryService.listAll()).thenReturn(buildCategories());
     when(expenseRepository.findByDateBetween(firstDay, lastDay)).thenReturn(expensesForFebruary_leapYear());
     // when
-    List<List<Object>> result = sut.buildDataGrid(Year.of(2016), Month.FEBRUARY, USERNAME);
+    DataGridForm result = sut.buildDataGrid(Year.of(2016), Month.FEBRUARY, USERNAME);
     // then
-    assertThat(result).isEqualTo(expectedDataForFebruary());
+    assertThat(result).isEqualTo(expectedDataForFebruary_leapYear());
   }
 
 
@@ -156,7 +157,7 @@ public class ExpenseServiceTest {
         expense2);
   }
 
-  private List<Category> mockCategories() {
+  private List<Category> buildCategories() {
     Category category1 = new Category();
     category1.setName(Product.FOOD);
     category1.setPriority(1);
@@ -199,9 +200,10 @@ public class ExpenseServiceTest {
         Product.UTILITIES, category4);
   }
 
-  private List<List<Object>> expectedDataForMay() {
-    return List.of(
-        List.of("", "Food", "Medicine", "Utilities", "Electronics", "Total"),
+  private DataGridForm expectedDataForMay() {
+    DataGridForm form = new DataGridForm();
+    form.setHeader(List.of("Date", "Food", "Medicine", "Utilities", "Electronics", "Total"));
+    form.setRows(List.of(
         List.of(1, 8000.0, "", "", 3000.0, 11000.0),
         List.of(2, "", "", "", "", ""),
         List.of(3, "", "", "", "", ""),
@@ -232,14 +234,16 @@ public class ExpenseServiceTest {
         List.of(28, "", "", "", "", ""),
         List.of(29, "", "", "", "", ""),
         List.of(30, "", "", "", "", ""),
-        List.of(31, "", 1500.0, "", 6000.0, 7500.0),
-        List.of("Total", 8000.0, 1500.0, 3000.0, 9000.0, 21500.0)
-    );
+        List.of(31, "", 1500.0, "", 6000.0, 7500.0)
+    ));
+    form.setFooter(List.of("Total", 8000.0, 1500.0, 3000.0, 9000.0, 21500.0));
+    return form;
   }
 
-  private List<List<Object>> expectedDataForFebruary() {
-    return List.of(
-        List.of("", "Food", "Medicine", "Utilities", "Electronics", "Total"),
+  private DataGridForm expectedDataForFebruary_leapYear() {
+    DataGridForm form = new DataGridForm();
+    form.setHeader(List.of("Date", "Food", "Medicine", "Utilities", "Electronics", "Total"));
+    form.setRows(List.of(
         List.of(1, "", 500.0, "", "", 500.0),
         List.of(2, "", "", "", "", ""),
         List.of(3, "", "", "", "", ""),
@@ -268,8 +272,9 @@ public class ExpenseServiceTest {
         List.of(26, "", "", "", "", ""),
         List.of(27, "", "", "", "", ""),
         List.of(28, "", "", "", "", ""),
-        List.of(29, "", "", 7500.0, "", 7500.0),
-        List.of("Total", 0.0, 500.0, 7500.0, 0.0, 8000.0)
-    );
+        List.of(29, "", "", 7500.0, "", 7500.0)
+    ));
+    form.setFooter(List.of("Total", 0.0, 500.0, 7500.0, 0.0, 8000.0));
+    return form;
   }
 }

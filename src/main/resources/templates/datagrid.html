@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Expense Data Grid</title>
+  <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
+
+  <style type="text/css">
+
+    thead {color:green;}
+    tbody {color:blue;}
+    tfoot {color:red;}
+
+    table, th, td {
+      border: 1px solid black;
+    }
+
+		tr:hover{
+		 cursor: pointer;
+		}
+
+  </style>
+
+</head>
+<body>
+<div class="container">
+  <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+</div>
+<div class="container">
+  <div id="chart_div"></div>
+</div>
+<div class="container">
+  <table id="datagrid" class="table table-striped">
+    <thead>
+      <tr>
+        <th th:each="headerColData:${data.header}" th:text="${headerColData}"/>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="row:${data.rows}">
+        <td th:each="rowColData:${row}" th:text="${rowColData}"/>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <th th:each="footerColData:${data.footer}" th:text="${footerColData}"/>
+      </tr>
+    </tfoot>
+  </table>
+</div>
+</body>
+</html>
