@@ -20,6 +20,21 @@
 
   </style>
 
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var chartData = document.getElementById('chartData').value;
+        alert(chartData);
+        var data = new google.visualization.DataTable(chartData);
+        var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+        chart.draw(data, {width: 600, height: 400});
+      }
+
+  </script>
+
 </head>
 <body>
 <div class="container">
@@ -46,6 +61,7 @@
       </tr>
     </tfoot>
   </table>
+  <input id="chartData" type="hidden" th:value="${data.chartData}">
 </div>
 </body>
 </html>

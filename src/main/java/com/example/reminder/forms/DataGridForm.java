@@ -8,6 +8,7 @@ public class DataGridForm {
   public List header;
   public List<List<Object>> rows;
   public List footer;
+  public String chartData;
 
   public DataGridForm() {}
 
@@ -35,9 +36,17 @@ public class DataGridForm {
     this.footer = footer;
   }
 
+  public String getChartData() {
+    return chartData;
+  }
+
+  public void setChartData(String chartData) {
+    this.chartData = chartData;
+  }
+
   @Override
   public int hashCode() {
-    return Objects.hash(header, rows, footer);
+    return Objects.hash(header, rows, footer, chartData);
   }
 
   @Override
@@ -51,6 +60,7 @@ public class DataGridForm {
     DataGridForm other = (DataGridForm) o;
     return Objects.equals(header, other.getHeader())
         && Objects.equals(rows, other.getRows())
-        && Objects.equals(footer, other.getFooter());
+        && Objects.equals(footer, other.getFooter())
+        && Objects.equals(chartData, other.getChartData());
   }
 }

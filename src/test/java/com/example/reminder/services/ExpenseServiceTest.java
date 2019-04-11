@@ -83,6 +83,11 @@ public class ExpenseServiceTest {
   }
 
   @Test
+  void buildChartData() {
+
+  }
+
+  @Test
   void buildDataGrid_may() {
     // given
     Date firstDay = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1));

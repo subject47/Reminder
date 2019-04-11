@@ -2,12 +2,15 @@ package com.example.reminder.controller;
 
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
+import com.example.reminder.forms.ChartDataForm;
 import com.example.reminder.forms.DataGridForm;
 import com.example.reminder.forms.ExpenseForm;
 import com.example.reminder.services.CategoryService;
 import com.example.reminder.services.ExpenseService;
 import com.example.reminder.services.UserService;
 import com.example.reminder.utils.DateUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.text.ParseException;
@@ -82,10 +85,12 @@ public class ExpenseController {
 
   @GetMapping("/datagrid")
   public String datagrid(@RequestParam Integer year, @RequestParam Integer month, Model model,
-      Authentication authentication) {
+      Authentication authentication) throws JsonProcessingException {
     DataGridForm dataGrid =
-        expenseService.buildDataGrid(
-            Year.of(year), Month.of(month), authentication.getName());
+        expenseService.buildDataGrid(Year.of(year), Month.of(month), authentication.getName());
+    ChartDataForm chartData =
+        expenseService.buildChartData(year, month, authentication.getName());
+    dataGrid.setChartData(new ObjectMapper().writeValueAsString(chartData));
     model.addAttribute("data", dataGrid);
     return "datagrid";
   }
