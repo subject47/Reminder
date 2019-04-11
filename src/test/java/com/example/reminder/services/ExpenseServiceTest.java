@@ -98,6 +98,12 @@ public class ExpenseServiceTest {
   }
 
   @Test
+  void groupExpensesByCategory() {
+    List<Expense> result = sut.groupExpensesByCategory(buildExpensesForChart());
+    assertThat(result).isEqualTo(buildExpensesGroupedByCategories());
+  }
+
+  @Test
   void buildDataGrid_may() {
     // given
     Date firstDay = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1));
@@ -365,6 +371,44 @@ public class ExpenseServiceTest {
         expense3,
         expense4,
         expense5
+    );
+  }
+
+  private List<Expense> buildExpensesGroupedByCategories() {
+    Expense expense1 = new ExpenseBuilder()
+        .user(user)
+        .amount(1300.0)
+        .category(
+            new CategoryBuilder()
+                .id(1)
+                .name("Medicine")
+                .build())
+        .build();
+
+    Expense expense2 = new ExpenseBuilder()
+        .user(user)
+        .amount(3500.0)
+        .category(
+            new CategoryBuilder()
+                .id(2)
+                .name("Food")
+                .build())
+        .build();
+
+    Expense expense3 = new ExpenseBuilder()
+        .user(user)
+        .amount(3000.0)
+        .category(
+            new CategoryBuilder()
+                .id(3)
+                .name("Electronics")
+                .build())
+        .build();
+
+    return List.of(
+        expense1,
+        expense2,
+        expense3
     );
   }
 

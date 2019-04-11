@@ -99,6 +99,7 @@ public class ExpenseService implements CRUDService<Expense> {
       entry.getValue().forEach(expense -> {
         groupExpense.setCategory(expense.getCategory());
         groupExpense.addAmount(expense.getAmount());
+        groupExpense.setUser(expense.getUser());
       });
       groupedExpenses.add(groupExpense);
     });

@@ -9,17 +9,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.example.reminder.domain.Expense;
-import com.example.reminder.domain.User;
+import com.example.reminder.forms.ChartDataForm;
 import com.example.reminder.services.CategoryService;
 import com.example.reminder.services.ExpenseService;
-import com.example.reminder.util.TestUtils.CategoryBuilder;
-import com.example.reminder.util.TestUtils.ExpenseBuilder;
-import com.example.reminder.utils.DateUtils;
-import com.google.common.collect.Lists;
-import java.time.LocalDate;
 import java.time.Month;
-import java.time.Year;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -46,89 +39,40 @@ public class RestApiControllerTest {
   @MockBean
   private CategoryService categoryService;
 
-  private List<Expense> expenses;
+  private ChartDataForm chartData;
 
   @BeforeEach
   void setUp() {
-    expenses = Lists.newArrayList();
-    User user = new User("user", "pw");
+    List<ChartDataForm.Column> columns = List.of(
+        new ChartDataForm.Column("Category", "string"),
+        new ChartDataForm.Column("Amount", "number"));
+    List<ChartDataForm.Row> rows = List.of(
+        new ChartDataForm.Row(
+            List.of(
+                new ChartDataForm.Row.Data("Medicine"),
+                new ChartDataForm.Row.Data(1300.0)
+            )),
+        new ChartDataForm.Row(
+            List.of(
+                new ChartDataForm.Row.Data("Food"),
+                new ChartDataForm.Row.Data(3500.0)
+            )
+        ),
+        new ChartDataForm.Row(
+            List.of(
+                new ChartDataForm.Row.Data("Electronics"),
+                new ChartDataForm.Row.Data(3000.0)
+            )
+        )
 
-    Expense expense1 = new ExpenseBuilder()
-        .user(user)
-        .amount(1000.0)
-        .date(
-            DateUtils.asDate(
-                LocalDate.of(2018, Month.MAY, 15)))
-        .category(
-            new CategoryBuilder()
-                .id(1)
-                .name("Medicine")
-                .build())
-        .build();
-
-    Expense expense2 = new ExpenseBuilder()
-        .user(user)
-        .amount(300.0)
-        .date(
-            DateUtils.asDate(
-                LocalDate.of(2018, Month.MAY, 15)))
-        .category(
-            new CategoryBuilder()
-                .id(1)
-                .name("Medicine")
-                .build())
-        .build();
-
-    Expense expense3 = new ExpenseBuilder()
-        .user(user)
-        .amount(2000.0)
-        .date(
-            DateUtils.asDate(
-                LocalDate.of(2018, Month.MAY, 1)))
-        .category(
-            new CategoryBuilder()
-                .id(2)
-                .name("Food")
-                .build())
-        .build();
-
-    Expense expense4 = new ExpenseBuilder()
-        .user(user)
-        .amount(1500.0)
-        .date(
-            DateUtils.asDate(
-                LocalDate.of(2018, Month.MAY, 1)))
-        .category(
-            new CategoryBuilder()
-                .id(2)
-                .name("Food")
-                .build())
-        .build();
-
-    Expense expense5 = new ExpenseBuilder()
-        .user(user)
-        .amount(3000.0)
-        .date(
-            DateUtils.asDate(
-                LocalDate.of(2018, Month.MAY, 31)))
-        .category(
-            new CategoryBuilder()
-                .id(3)
-                .name("Electronics")
-                .build())
-        .build();
-
-    expenses.add(expense1);
-    expenses.add(expense2);
-    expenses.add(expense3);
-    expenses.add(expense4);
-    expenses.add(expense5);
+    );
+    chartData = new ChartDataForm(columns, rows);
   }
 
   @Test
   void generateChartData() throws Exception {
-    when(expenseService.findExpensesByYearAndMonthAndUsername(Year.of(2018), Month.MAY, "user"))
-        .thenReturn(expenses);
+    when(expenseService.buildChartData(2018, Month.MAY.getValue(), "user"))
+        .thenReturn(chartData);
 
     mvc.perform(get("/chartdata?date=1525122000000")
         .contentType(MediaType.APPLICATION_JSON))
@@ -158,6 +102,6 @@ public class RestApiControllerTest {
         .andExpect(jsonPath("$.rows[2].c[0].f", equalTo(null)))
         .andExpect(jsonPath("$.rows[2].c[1].v", is(3000.0)))
         .andExpect(jsonPath("$.rows[2].c[1].f", equalTo(null)));
-    verify(expenseService).findExpensesByYearAndMonthAndUsername(Year.of(2018), Month.MAY, "user");
+    verify(expenseService).buildChartData(2018, Month.MAY.getValue(), "user");
   }
 }
