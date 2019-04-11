@@ -1,9 +1,9 @@
 package com.example.reminder.services;
 
-import static com.example.reminder.domain.Product.ELECTRONICS;
-import static com.example.reminder.domain.Product.FOOD;
-import static com.example.reminder.domain.Product.MEDICINE;
-import static com.example.reminder.domain.Product.UTILITIES;
+import static com.example.reminder.domain.Category.ELECTRONICS;
+import static com.example.reminder.domain.Category.FOOD;
+import static com.example.reminder.domain.Category.MEDICINE;
+import static com.example.reminder.domain.Category.UTILITIES;
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.when;
 
@@ -180,19 +180,19 @@ public class ExpenseServiceTest {
 
   private List<Category> buildCategories() {
     Category category1 = new Category();
-    category1.setName(Product.FOOD);
+    category1.setName(FOOD);
     category1.setPriority(1);
 
     Category category2 = new Category();
-    category2.setName(Product.ELECTRONICS);
+    category2.setName(ELECTRONICS);
     category2.setPriority(4);
 
     Category category3 = new Category();
-    category3.setName(Product.MEDICINE);
+    category3.setName(MEDICINE);
     category3.setPriority(2);
 
     Category category4 = new Category();
-    category4.setName(Product.UTILITIES);
+    category4.setName(UTILITIES);
     category4.setPriority(3);
 
     return List.of(category1, category2, category3, category4);
@@ -200,25 +200,25 @@ public class ExpenseServiceTest {
 
   private Map<String, Category> buildCategoryByName() {
     Category category1 = new Category();
-    category1.setName(Product.FOOD);
+    category1.setName(FOOD);
     category1.setPriority(1);
 
     Category category2 = new Category();
-    category2.setName(Product.ELECTRONICS);
+    category2.setName(ELECTRONICS);
     category2.setPriority(4);
 
     Category category3 = new Category();
-    category3.setName(Product.MEDICINE);
+    category3.setName(MEDICINE);
     category3.setPriority(2);
 
     Category category4 = new Category();
-    category4.setName(Product.UTILITIES);
+    category4.setName(UTILITIES);
     category4.setPriority(3);
 
-    return Map.of(Product.FOOD, category1,
-        Product.ELECTRONICS, category2,
-        Product.MEDICINE, category3,
-        Product.UTILITIES, category4);
+    return Map.of(FOOD, category1,
+        ELECTRONICS, category2,
+        MEDICINE, category3,
+        UTILITIES, category4);
   }
 
   private DataGridForm expectedDataForMay() {

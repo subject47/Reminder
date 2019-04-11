@@ -6,6 +6,11 @@ import com.google.common.base.Objects;
 @Entity
 public class Category extends AbstractDomainClass implements Comparable<Category> {
 
+  public static final String FOOD = "Food";
+  public static final String ELECTRONICS = "Electronics";
+  public static final String MEDICINE = "Medicine";
+  public static final String UTILITIES = "Utilities";
+
   private String name;
   private String description;
   private Integer priority = 0;
