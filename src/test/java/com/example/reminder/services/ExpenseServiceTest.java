@@ -11,8 +11,11 @@ import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
 import com.example.reminder.domain.Product;
 import com.example.reminder.domain.User;
+import com.example.reminder.forms.ChartDataForm;
 import com.example.reminder.forms.DataGridForm;
 import com.example.reminder.repositories.ExpenseRepository;
+import com.example.reminder.util.TestUtils.CategoryBuilder;
+import com.example.reminder.util.TestUtils.ExpenseBuilder;
 import com.example.reminder.utils.DateUtils;
 import java.time.LocalDate;
 import java.time.Month;
@@ -84,7 +87,14 @@ public class ExpenseServiceTest {
 
   @Test
   void buildChartData() {
+    LocalDate start = LocalDate.of(2018, Month.MAY, 1);
+    LocalDate end = start.plusMonths(1).minusDays(1);
+    when(expenseRepository.findByDateBetween(DateUtils.asDate(start), DateUtils.asDate(end)))
+        .thenReturn(buildExpensesForChart());
 
+    ChartDataForm res = sut.buildChartData(2018, Month.MAY.getValue(), USERNAME);
+    System.out.println(res);
+    assertThat(res).isEqualTo(buildExpectedChartData());
   }
 
   @Test
@@ -281,5 +291,107 @@ public class ExpenseServiceTest {
     ));
     form.setFooter(List.of("Total", 0.0, 500.0, 7500.0, 0.0, 8000.0));
     return form;
+  }
+
+  private List<Expense> buildExpensesForChart() {
+    Expense expense1 = new ExpenseBuilder()
+        .user(user)
+        .amount(1000.0)
+        .date(
+            DateUtils.asDate(
+                LocalDate.of(2018, Month.MAY, 15)))
+        .category(
+            new CategoryBuilder()
+                .id(1)
+                .name("Medicine")
+                .build())
+        .build();
+
+    Expense expense2 = new ExpenseBuilder()
+        .user(user)
+        .amount(300.0)
+        .date(
+            DateUtils.asDate(
+                LocalDate.of(2018, Month.MAY, 15)))
+        .category(
+            new CategoryBuilder()
+                .id(1)
+                .name("Medicine")
+                .build())
+        .build();
+
+    Expense expense3 = new ExpenseBuilder()
+        .user(user)
+        .amount(2000.0)
+        .date(
+            DateUtils.asDate(
+                LocalDate.of(2018, Month.MAY, 1)))
+        .category(
+            new CategoryBuilder()
+                .id(2)
+                .name("Food")
+                .build())
+        .build();
+
+    Expense expense4 = new ExpenseBuilder()
+        .user(user)
+        .amount(1500.0)
+        .date(
+            DateUtils.asDate(
+                LocalDate.of(2018, Month.MAY, 1)))
+        .category(
+            new CategoryBuilder()
+                .id(2)
+                .name("Food")
+                .build())
+        .build();
+
+    Expense expense5 = new ExpenseBuilder()
+        .user(user)
+        .amount(3000.0)
+        .date(
+            DateUtils.asDate(
+                LocalDate.of(2018, Month.MAY, 31)))
+        .category(
+            new CategoryBuilder()
+                .id(3)
+                .name("Electronics")
+                .build())
+        .build();
+
+    return List.of(
+        expense1,
+        expense2,
+        expense3,
+        expense4,
+        expense5
+    );
+  }
+
+  private ChartDataForm buildExpectedChartData() {
+    List<ChartDataForm.Column> columns = List.of(
+        new ChartDataForm.Column("Category", "string"),
+        new ChartDataForm.Column("Amount", "number"));
+    List<ChartDataForm.Row> rows = List.of(
+        new ChartDataForm.Row(
+            List.of(
+                new ChartDataForm.Row.Data("Medicine"),
+                new ChartDataForm.Row.Data(1300.0)
+            )),
+        new ChartDataForm.Row(
+            List.of(
+                new ChartDataForm.Row.Data("Food"),
+                new ChartDataForm.Row.Data(3500.0)
+            )
+        ),
+        new ChartDataForm.Row(
+            List.of(
+                new ChartDataForm.Row.Data("Electronics"),
+                new ChartDataForm.Row.Data(3000.0)
+            )
+        )
+
+    );
+    return new ChartDataForm(columns, rows);
   }
 }
