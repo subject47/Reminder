@@ -19,6 +19,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -64,49 +65,48 @@ public class ExpenseController {
           .put(Month.DECEMBER.getValue(), "December")
           .build();
 
-
-  @GetMapping("/dates")
-  public String dates(@RequestParam String endpoint, Model model) {
-    model.addAttribute("years", YEARS);
-    model.addAttribute("months", MONTHS);
-    model.addAttribute("year", 1);
-    model.addAttribute("month", 1);
-    model.addAttribute("endpoint", endpoint);
-    return "datesSelector";
-  }
-
   @GetMapping("/expenses")
   public String expense(@RequestParam Integer year, @RequestParam Integer month, Model model,
       Authentication authentication) {
     if (year == null || month == null) {
-      model.addAttribute("endpoint", EXPENSES);
-      return "redirect:/dates?endpoint=" + EXPENSES;
+      LocalDate now = LocalDate.now();
+      year = now.getYear();
+      month = now.getMonthValue();
     }
     List<Expense> expenses =
         expenseService.findExpensesByYearAndMonthAndUsername(
             Year.of(year), Month.of(month), authentication.getName());
-    model.addAttribute("expenses", expenses);
-    model.addAttribute("year", year);
-    model.addAttribute("month", month);
-    return "expenseList";
+    model.addAllAttributes(Map.of(
+        "years", YEARS,
+        "months", MONTHS,
+        "year", year,
+        "month", month,
+        "data", expenses,
+        "endpoint", EXPENSES));
+    return EXPENSES;
   }
 
   @GetMapping("/datagrid")
   public String datagrid(@RequestParam Integer year, @RequestParam Integer month, Model model,
       Authentication authentication) throws JsonProcessingException {
     if (year == null || month == null) {
-      model.addAttribute("endpoint", DATAGRID);
-      return "redirect:/dates?endpoint=" + DATAGRID;
+      LocalDate now = LocalDate.now();
+      year = now.getYear();
+      month = now.getMonthValue();
     }
     DataGridForm dataGrid =
         expenseService.buildDataGrid(Year.of(year), Month.of(month), authentication.getName());
     ChartDataForm chartData =
         expenseService.buildChartData(year, month, authentication.getName());
     dataGrid.setChartData(new ObjectMapper().writeValueAsString(chartData));
-    model.addAttribute("data", dataGrid);
-    model.addAttribute("year", year);
-    model.addAttribute("month", month);
-    return "datagrid";
+    model.addAllAttributes(Map.of(
+        "years", YEARS,
+        "months", MONTHS,
+        "year", year,
+        "month", month,
+        "data", dataGrid,
+        "endpoint", DATAGRID));
+    return DATAGRID;
   }
 
   @GetMapping("/expense/new")

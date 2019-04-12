@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head lang="en">
-<title>Date Selector</title>
-<!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
+  <title>Date Selector</title>
+  <!--/*/ <th:block th:include="fragments/headerinc :: head"></th:block> /*/-->
 </head>
 
 <body>
 
-	<script type="text/javascript">
+<script type="text/javascript">
 	/* <![CDATA[ */
 		function onSubmit() {
 			var endpoint = $("#endpoint").val();
@@ -16,30 +16,33 @@
 			window.location.replace(endpoint + "?year=" + year + "&month=" + month);
 		}
 	/* ]]> */
-	</script>
 
-	<div class="container">
-	    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
-	</div>
-	<h4>Select a date range</h4>
-	<input id="endpoint" type="hidden" th:value="${endpoint}"/>
-	<div>
-		<label for="year">Year:</label>
-		<select th:field="*{year}" id="year">
-			<option th:each="year:${years}" th:value="${year}"
-				th:utext="${year}" />
-		</select>
-	</div>
-	<div>
-		<label for="month">Month:</label> 
-		<select th:field="*{month}"	id="month">
-			<option th:each="key:${months.keySet()}" th:value="${key}"
-				th:utext="${months.get(key)}" />
-		</select>
-	</div>
-	<div>
-		<button onclick="onSubmit()">Submit</button>
-	</div>
+</script>
+
+<div class="container">
+  <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
+</div>
+<div>
+  <h4>Select a date range</h4>
+  <input id="endpoint" type="hidden" th:value="${endpoint}"/>
+  <div>
+    <label for="year">Year:</label>
+    <select th:field="*{year}" id="year">
+      <option th:each="year:${years}" th:value="${year}"
+              th:utext="${year}"/>
+    </select>
+  </div>
+  <div>
+    <label for="month">Month:</label>
+    <select th:field="*{month}" id="month">
+      <option th:each="key:${months.keySet()}" th:value="${key}"
+              th:utext="${months.get(key)}"/>
+    </select>
+  </div>
+  <div>
+    <button onclick="onSubmit()">Submit</button>
+  </div>
+</div>
 
 </body>
 </html>

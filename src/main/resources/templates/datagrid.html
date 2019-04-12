@@ -32,6 +32,13 @@
         chart.draw(data, {width: 600, height: 400});
       }
 
+      function onSubmit() {
+        var endpoint = $("#endpoint").val();
+        var year = $("#year").val();
+        var month = $("#month").val();
+        window.location.replace(endpoint + "?year=" + year + "&month=" + month);
+      }
+
   </script>
 
 </head>
@@ -39,9 +46,33 @@
 <div class="container">
   <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
 </div>
+
+<div>
+  <h4>Select a date range</h4>
+  <input id="endpoint" type="hidden" th:value="${endpoint}"/>
+  <div>
+    <label for="year">Year:</label>
+    <select th:field="*{year}" id="year">
+      <option th:each="year:${years}" th:value="${year}"
+              th:utext="${year}"/>
+    </select>
+  </div>
+  <div>
+    <label for="month">Month:</label>
+    <select th:field="*{month}" id="month">
+      <option th:each="key:${months.keySet()}" th:value="${key}"
+              th:utext="${months.get(key)}"/>
+    </select>
+  </div>
+  <div>
+    <button onclick="onSubmit()">Submit</button>
+  </div>
+</div>
+
 <div class="container">
   <div id="chart_div"></div>
 </div>
+
 <div class="container">
   <table id="datagrid" class="table table-striped">
     <thead>

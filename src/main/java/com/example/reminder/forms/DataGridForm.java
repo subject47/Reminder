@@ -5,12 +5,10 @@ import java.util.Objects;
 
 public class DataGridForm {
 
-  public List header;
-  public List<List<Object>> rows;
-  public List footer;
-  public String chartData;
-
-  public DataGridForm() {}
+  private List header;
+  private List<List<Object>> rows;
+  private List footer;
+  private String chartData;
 
   public List getHeader() {
     return header;

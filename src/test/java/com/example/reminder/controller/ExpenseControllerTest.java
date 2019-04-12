@@ -94,17 +94,6 @@ public class ExpenseControllerTest {
   }
 
   @Test
-  void dates() throws Exception {
-    mvc.perform(get("/dates"))
-        .andExpect(status().isOk())
-        .andExpect(model().attributeExists("years"))
-        .andExpect(model().attributeExists("months"))
-        .andExpect(model().attributeExists("year"))
-        .andExpect(model().attributeExists("month"))
-        .andExpect(view().name("datesSelector"));
-  }
-
-  @Test
   void expenses() throws Exception {
     Year year = Year.of(YEAR);
     Month month = Month.of(MONTH);
@@ -113,8 +102,12 @@ public class ExpenseControllerTest {
 
     mvc.perform(get("/expenses?year=2018&month=5"))
         .andExpect(status().isOk())
-        .andExpect(model().attribute("expenses", expenses))
-        .andExpect(view().name("expenseList"));
+        .andExpect(model().attribute("data", expenses))
+        .andExpect(model().attributeExists("years"))
+        .andExpect(model().attributeExists("months"))
+        .andExpect(model().attributeExists("year"))
+        .andExpect(model().attributeExists("month"))
+        .andExpect(view().name("expenses"));
 
     verify(expenseService).findExpensesByYearAndMonthAndUsername(year, month, "user");
   }
@@ -169,6 +162,10 @@ public class ExpenseControllerTest {
     mvc.perform(get("/datagrid?year=2018&month=5"))
         .andExpect(status().isOk())
         .andExpect(model().attribute("data", form))
+        .andExpect(model().attributeExists("years"))
+        .andExpect(model().attributeExists("months"))
+        .andExpect(model().attributeExists("year"))
+        .andExpect(model().attributeExists("month"))
         .andExpect(view().name("datagrid"));
 
     verify(expenseService).buildDataGrid(year, month, "user");
