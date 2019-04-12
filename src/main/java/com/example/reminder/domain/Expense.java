@@ -25,7 +25,7 @@ public class Expense extends AbstractDomainClass implements Comparable<Expense> 
   @OneToOne
   @NotNull
   private Category category;
-  private String description;
+  private String description = "";
 
   public Expense() {}
 
@@ -89,7 +89,7 @@ public class Expense extends AbstractDomainClass implements Comparable<Expense> 
 
   @Override
   public int hashCode() {
-    return Objects.hash(user, amount, date, description, category);
+    return Objects.hash(user, amount, category);
   }
 
   @Override
@@ -103,8 +103,6 @@ public class Expense extends AbstractDomainClass implements Comparable<Expense> 
     Expense other = (Expense) o;
     return Objects.equals(user, other.getUser())
         && Objects.equals(amount, other.getAmount())
-        && Objects.equals(date, other.getDate())
-        && Objects.equals(description, other.getDescription())
         && Objects.equals(category, other.getCategory());
   }
 

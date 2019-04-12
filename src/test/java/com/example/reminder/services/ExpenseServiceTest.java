@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
-import com.example.reminder.domain.Product;
 import com.example.reminder.domain.User;
 import com.example.reminder.forms.ChartDataForm;
 import com.example.reminder.forms.DataGridForm;
@@ -17,6 +16,7 @@ import com.example.reminder.repositories.ExpenseRepository;
 import com.example.reminder.util.TestUtils.CategoryBuilder;
 import com.example.reminder.util.TestUtils.ExpenseBuilder;
 import com.example.reminder.utils.DateUtils;
+import com.google.common.collect.Lists;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
@@ -129,31 +129,54 @@ public class ExpenseServiceTest {
     assertThat(result).isEqualTo(expectedDataForFebruary_leapYear());
   }
 
-
   private List<Expense> expensesForMay() {
-    Date date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1));
-    Expense expense1 = new Expense(user, 2000.0, date, "", categoryByName.get(FOOD));
-    expense1.setId(111);
+    Expense expense1 = ExpenseBuilder.builder()
+        .id(111)
+        .user(user)
+        .amount(2000.0)
+        .date(DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1)))
+        .category(categoryByName.get(FOOD))
+        .build();
 
-    date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1));
-    Expense expense2 = new Expense(user, 6000.0, date, "", categoryByName.get(FOOD));
-    expense2.setId(222);
+    Expense expense2 = ExpenseBuilder.builder()
+        .id(222)
+        .user(user)
+        .amount(6000.0)
+        .date(DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1)))
+        .category(categoryByName.get(FOOD))
+        .build();
 
-    date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1));
-    Expense expense3 = new Expense(user, 3000.0, date, "", categoryByName.get(ELECTRONICS));
-    expense3.setId(333);
+    Expense expense3 = ExpenseBuilder.builder()
+        .id(333)
+        .user(user)
+        .amount(3000.0)
+        .date(DateUtils.asDate(LocalDate.of(2018, Month.MAY, 1)))
+        .category(categoryByName.get(ELECTRONICS))
+        .build();
 
-    date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 20));
-    Expense expense4 = new Expense(user, 3000.0, date, "", categoryByName.get(UTILITIES));
-    expense4.setId(444);
+    Expense expense4 = ExpenseBuilder.builder()
+        .id(444)
+        .user(user)
+        .amount(3000.0)
+        .date(DateUtils.asDate(LocalDate.of(2018, Month.MAY, 20)))
+        .category(categoryByName.get(UTILITIES)
+        ).build();
 
-    date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 31));
-    Expense expense5 = new Expense(user, 6000.0, date, "", categoryByName.get(ELECTRONICS));
-    expense5.setId(555);
+    Expense expense5 = ExpenseBuilder.builder()
+        .id(555)
+        .user(user)
+        .amount(6000.0)
+        .date(DateUtils.asDate(LocalDate.of(2018, Month.MAY, 31)))
+        .category(categoryByName.get(ELECTRONICS))
+        .build();
 
-    date = DateUtils.asDate(LocalDate.of(2018, Month.MAY, 31));
-    Expense expense6 = new Expense(user, 1500.0, date, "", categoryByName.get(MEDICINE));
-    expense6.setId(666);
+    Expense expense6 = ExpenseBuilder.builder()
+        .id(666)
+        .user(user)
+        .amount(1500.0)
+        .date(DateUtils.asDate(LocalDate.of(2018, Month.MAY, 31)))
+        .category(categoryByName.get(MEDICINE))
+        .build();
 
     return List.of(
         expense1,
@@ -165,13 +188,21 @@ public class ExpenseServiceTest {
   }
 
   private List<Expense> expensesForFebruary_leapYear() {
-    Date date = DateUtils.asDate(LocalDate.of(2016, Month.FEBRUARY, 1));
-    Expense expense1 = new Expense(user, 500.0, date, "", categoryByName.get(MEDICINE));
-    expense1.setId(111);
+    Expense expense1 = ExpenseBuilder.builder()
+        .id(111)
+        .user(user)
+        .amount(500.0)
+        .date(DateUtils.asDate(LocalDate.of(2016, Month.FEBRUARY, 1)))
+        .category(categoryByName.get(MEDICINE))
+        .build();
 
-    date = DateUtils.asDate(LocalDate.of(2016, Month.FEBRUARY, 29));
-    Expense expense2 = new Expense(user, 7500.0, date, "", categoryByName.get(UTILITIES));
-    expense2.setId(222);
+    Expense expense2 = ExpenseBuilder.builder()
+        .id(222)
+        .user(user)
+        .amount(7500.0)
+        .date(DateUtils.asDate(LocalDate.of(2016, Month.FEBRUARY, 29)))
+        .category(categoryByName.get(UTILITIES))
+        .build();
 
     return List.of(
         expense1,
@@ -179,84 +210,33 @@ public class ExpenseServiceTest {
   }
 
   private List<Category> buildCategories() {
-    Category category1 = new Category();
-    category1.setName(FOOD);
-    category1.setPriority(1);
-
-    Category category2 = new Category();
-    category2.setName(ELECTRONICS);
-    category2.setPriority(4);
-
-    Category category3 = new Category();
-    category3.setName(MEDICINE);
-    category3.setPriority(2);
-
-    Category category4 = new Category();
-    category4.setName(UTILITIES);
-    category4.setPriority(3);
-
-    return List.of(category1, category2, category3, category4);
+    return List.of(
+        CategoryBuilder.builder().name(FOOD).priority(1).build(),
+        CategoryBuilder.builder().name(ELECTRONICS).priority(4).build(),
+        CategoryBuilder.builder().name(MEDICINE).priority(2).build(),
+        CategoryBuilder.builder().name(UTILITIES).priority(3).build());
   }
 
   private Map<String, Category> buildCategoryByName() {
-    Category category1 = new Category();
-    category1.setName(FOOD);
-    category1.setPriority(1);
-
-    Category category2 = new Category();
-    category2.setName(ELECTRONICS);
-    category2.setPriority(4);
-
-    Category category3 = new Category();
-    category3.setName(MEDICINE);
-    category3.setPriority(2);
-
-    Category category4 = new Category();
-    category4.setName(UTILITIES);
-    category4.setPriority(3);
-
-    return Map.of(FOOD, category1,
-        ELECTRONICS, category2,
-        MEDICINE, category3,
-        UTILITIES, category4);
+    return Map.of(
+        FOOD, CategoryBuilder.builder().name(FOOD).priority(1).build(),
+        ELECTRONICS, CategoryBuilder.builder().name(ELECTRONICS).priority(4).build(),
+        MEDICINE, CategoryBuilder.builder().name(MEDICINE).priority(2).build(),
+        UTILITIES, CategoryBuilder.builder().name(UTILITIES).priority(3).build());
   }
 
   private DataGridForm expectedDataForMay() {
     DataGridForm form = new DataGridForm();
     form.setHeader(List.of("Date", "Food", "Medicine", "Utilities", "Electronics", "Total"));
-    form.setRows(List.of(
-        List.of(1, 8000.0, "", "", 3000.0, 11000.0),
-        List.of(2, "", "", "", "", ""),
-        List.of(3, "", "", "", "", ""),
-        List.of(4, "", "", "", "", ""),
-        List.of(5, "", "", "", "", ""),
-        List.of(6, "", "", "", "", ""),
-        List.of(7, "", "", "", "", ""),
-        List.of(8, "", "", "", "", ""),
-        List.of(9, "", "", "", "", ""),
-        List.of(10, "", "", "", "", ""),
-        List.of(11, "", "", "", "", ""),
-        List.of(12, "", "", "", "", ""),
-        List.of(13, "", "", "", "", ""),
-        List.of(14, "", "", "", "", ""),
-        List.of(15, "", "", "", "", ""),
-        List.of(16, "", "", "", "", ""),
-        List.of(17, "", "", "", "", ""),
-        List.of(18, "", "", "", "", ""),
-        List.of(19, "", "", "", "", ""),
-        List.of(20, "", "", 3000.0, "", 3000.0),
-        List.of(21, "", "", "", "", ""),
-        List.of(22, "", "", "", "", ""),
-        List.of(23, "", "", "", "", ""),
-        List.of(24, "", "", "", "", ""),
-        List.of(25, "", "", "", "", ""),
-        List.of(26, "", "", "", "", ""),
-        List.of(27, "", "", "", "", ""),
-        List.of(28, "", "", "", "", ""),
-        List.of(29, "", "", "", "", ""),
-        List.of(30, "", "", "", "", ""),
-        List.of(31, "", 1500.0, "", 6000.0, 7500.0)
-    ));
+
+    List<List<Object>> rows = Lists.newArrayListWithCapacity(31);
+    for (int i = 1; i <= Month.MAY.length(false); i++) {
+      rows.add(Lists.newArrayList(i, "", "", "", "", ""));
+    }
+    rows.set(0, List.of(1, 8000.0, "", "", 3000.0, 11000.0));
+    rows.set(19, List.of(20, "", "", 3000.0, "", 3000.0));
+    rows.set(30, List.of(31, "", 1500.0, "", 6000.0, 7500.0));
+    form.setRows(rows);
     form.setFooter(List.of("Total", 8000.0, 1500.0, 3000.0, 9000.0, 21500.0));
     return form;
   }
@@ -264,37 +244,13 @@ public class ExpenseServiceTest {
   private DataGridForm expectedDataForFebruary_leapYear() {
     DataGridForm form = new DataGridForm();
     form.setHeader(List.of("Date", "Food", "Medicine", "Utilities", "Electronics", "Total"));
-    form.setRows(List.of(
-        List.of(1, "", 500.0, "", "", 500.0),
-        List.of(2, "", "", "", "", ""),
-        List.of(3, "", "", "", "", ""),
-        List.of(4, "", "", "", "", ""),
-        List.of(5, "", "", "", "", ""),
-        List.of(6, "", "", "", "", ""),
-        List.of(7, "", "", "", "", ""),
-        List.of(8, "", "", "", "", ""),
-        List.of(9, "", "", "", "", ""),
-        List.of(10, "", "", "", "", ""),
-        List.of(11, "", "", "", "", ""),
-        List.of(12, "", "", "", "", ""),
-        List.of(13, "", "", "", "", ""),
-        List.of(14, "", "", "", "", ""),
-        List.of(15, "", "", "", "", ""),
-        List.of(16, "", "", "", "", ""),
-        List.of(17, "", "", "", "", ""),
-        List.of(18, "", "", "", "", ""),
-        List.of(19, "", "", "", "", ""),
-        List.of(20, "", "", "", "", ""),
-        List.of(21, "", "", "", "", ""),
-        List.of(22, "", "", "", "", ""),
-        List.of(23, "", "", "", "", ""),
-        List.of(24, "", "", "", "", ""),
-        List.of(25, "", "", "", "", ""),
-        List.of(26, "", "", "", "", ""),
-        List.of(27, "", "", "", "", ""),
-        List.of(28, "", "", "", "", ""),
-        List.of(29, "", "", 7500.0, "", 7500.0)
-    ));
+    List<List<Object>> rows = Lists.newArrayListWithCapacity(29);
+    for (int i = 1; i <= Month.FEBRUARY.length(true); i++) {
+      rows.add(Lists.newArrayList(i, "", "", "", "", ""));
+    }
+    rows.set(0, List.of(1, "", 500.0, "", "", 500.0));
+    rows.set(28, List.of(29, "", "", 7500.0, "", 7500.0));
+    form.setRows(rows);
     form.setFooter(List.of("Total", 0.0, 500.0, 7500.0, 0.0, 8000.0));
     return form;
   }
