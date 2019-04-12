@@ -10,9 +10,10 @@
 	<script type="text/javascript">
 	/* <![CDATA[ */
 		function onSubmit() {
-			var year = $("#year2").val();
-			var month = $("#month2").val();
-			window.location.replace("/expenses" + "?year=" + year + "&month=" + month);
+			var endpoint = $("#endpoint").val();
+			var year = $("#year").val();
+			var month = $("#month").val();
+			window.location.replace(endpoint + "?year=" + year + "&month=" + month);
 		}
 	/* ]]> */
 	</script>
@@ -21,17 +22,17 @@
 	    <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
 	</div>
 	<h4>Select a date range</h4>
-
+	<input id="endpoint" type="hidden" th:value="${endpoint}"/>
 	<div>
 		<label for="year">Year:</label>
-		<select th:field="*{year}" id="year2">
+		<select th:field="*{year}" id="year">
 			<option th:each="year:${years}" th:value="${year}"
 				th:utext="${year}" />
 		</select>
 	</div>
 	<div>
 		<label for="month">Month:</label> 
-		<select th:field="*{month}"	id="month2">
+		<select th:field="*{month}"	id="month">
 			<option th:each="key:${months.keySet()}" th:value="${key}"
 				th:utext="${months.get(key)}" />
 		</select>

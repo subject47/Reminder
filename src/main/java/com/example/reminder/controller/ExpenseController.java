@@ -31,9 +31,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ExpenseController {
 
   private static final String EXPENSE_FORM = "expenseForm";
+  private static final String EXPENSES = "expenses";
+  private static final String DATAGRID = "datagrid";
 
-  private static final String DATE_FORMAT = "yyyy-MM-dd";
-  private final SimpleDateFormat dateFormatter = new SimpleDateFormat(DATE_FORMAT);
+  private final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
   @Autowired
   private UserService userService;
@@ -65,33 +66,46 @@ public class ExpenseController {
 
 
   @GetMapping("/dates")
-  public String dates(Model model) {
+  public String dates(@RequestParam String endpoint, Model model) {
     model.addAttribute("years", YEARS);
     model.addAttribute("months", MONTHS);
     model.addAttribute("year", 1);
     model.addAttribute("month", 1);
+    model.addAttribute("endpoint", endpoint);
     return "datesSelector";
   }
 
   @GetMapping("/expenses")
   public String expense(@RequestParam Integer year, @RequestParam Integer month, Model model,
       Authentication authentication) {
+    if (year == null || month == null) {
+      model.addAttribute("endpoint", EXPENSES);
+      return "redirect:/dates?endpoint=" + EXPENSES;
+    }
     List<Expense> expenses =
         expenseService.findExpensesByYearAndMonthAndUsername(
             Year.of(year), Month.of(month), authentication.getName());
     model.addAttribute("expenses", expenses);
+    model.addAttribute("year", year);
+    model.addAttribute("month", month);
     return "expenseList";
   }
 
   @GetMapping("/datagrid")
   public String datagrid(@RequestParam Integer year, @RequestParam Integer month, Model model,
       Authentication authentication) throws JsonProcessingException {
+    if (year == null || month == null) {
+      model.addAttribute("endpoint", DATAGRID);
+      return "redirect:/dates?endpoint=" + DATAGRID;
+    }
     DataGridForm dataGrid =
         expenseService.buildDataGrid(Year.of(year), Month.of(month), authentication.getName());
     ChartDataForm chartData =
         expenseService.buildChartData(year, month, authentication.getName());
     dataGrid.setChartData(new ObjectMapper().writeValueAsString(chartData));
     model.addAttribute("data", dataGrid);
+    model.addAttribute("year", year);
+    model.addAttribute("month", month);
     return "datagrid";
   }
 
