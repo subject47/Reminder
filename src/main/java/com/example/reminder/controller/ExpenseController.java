@@ -66,16 +66,15 @@ public class ExpenseController {
           .build();
 
   @GetMapping("/expenses")
-  public String expense(@RequestParam Integer year, @RequestParam Integer month, Model model,
-      Authentication authentication) {
+  public String expense(@RequestParam Integer year, @RequestParam Integer month, @RequestParam Integer day,
+      @RequestParam String category, Model model, Authentication authentication) {
     if (year == null || month == null) {
       LocalDate now = LocalDate.now();
       year = now.getYear();
       month = now.getMonthValue();
     }
-    List<Expense> expenses =
-        expenseService.findExpensesByYearAndMonthAndUsername(
-            Year.of(year), Month.of(month), authentication.getName());
+    List<Expense> expenses = expenseService.findExpensesByYearMonthDayCategoryAndUsername(
+            Year.of(year), Month.of(month), day, category, authentication.getName());
     model.addAllAttributes(Map.of(
         "years", YEARS,
         "months", MONTHS,

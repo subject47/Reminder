@@ -12,6 +12,7 @@ import com.example.reminder.repositories.ExpenseRepository;
 import com.example.reminder.utils.DateUtils;
 import com.google.common.collect.Lists;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.Year;
 import java.util.ArrayList;
@@ -59,6 +60,22 @@ public class ExpenseService implements CRUDService<Expense> {
     LocalDate start = LocalDate.of(year.getValue(), month, 1);
     LocalDate end = start.plusMonths(1).minusDays(1);
     return expenseRepository.findByDateBetween(DateUtils.asDate(start), DateUtils.asDate(end));
+  }
+
+  public List<Expense> findAllExpensesByYearAndMonthAndDay(Year year, Month month, int day) {
+    LocalDateTime start = LocalDateTime.of(year.getValue(), month, day, 0, 0);
+    LocalDateTime end = start.plusDays(1).minusSeconds(1);
+    return expenseRepository.findByDateBetween(DateUtils.asDate(start), DateUtils.asDate(end));
+  }
+
+  public List<Expense> findExpensesByYearMonthDayCategoryAndUsername(Year year, Month month, int day, String category,
+      String username) {
+    return findAllExpensesByYearAndMonthAndDay(year, month, day)
+        .stream()
+        .filter(e -> e.getUser().getUsername().equals(username))
+        .filter(e -> e.getCategory().getName().equals(category))
+        .sorted(Comparator.comparing(Expense::getDate))
+        .collect(Collectors.toList());
   }
 
   public List<Expense> findExpensesByYearAndMonthAndUsername(Year year, Month month, String username) {

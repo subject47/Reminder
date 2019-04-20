@@ -25,6 +25,33 @@
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
 
+      window.onload = addHandlers;
+
+      function addHandlers() {
+          console.log("Add handlers");
+          var table = document.getElementById("datagrid");
+          if (table != null) {
+              var headerRow = table.rows[0];
+              for (var i = 1; i < table.rows.length - 1; i++) {
+                  var currentRow = table.rows[i];
+                  for (var j = 1; j < currentRow.cells.length - 1; j++) {
+                      var currentCell = currentRow.cells[j];
+                      var category = headerRow.cells[j].innerHTML;
+                      currentCell.onclick = cellClickHandler(i, category)
+                  }
+              }
+          }
+      }
+
+      var cellClickHandler = function(day, category) {
+          var headerRow = document.getElementById("datagrid").rows[0];
+          return function() {
+              var year = $("#year").val();
+              var month = $("#month").val();
+              window.location.href="/expenses?year=" + year + "&month=" + month + "&day=" + day + "&category=" + category;
+          };
+      }
+
       function drawChart() {
         var chartData = document.getElementById('chartData').value;
         var data = new google.visualization.DataTable(chartData);
@@ -39,6 +66,8 @@
         window.location.replace(endpoint + "?year=" + year + "&month=" + month);
       }
 
+
+
   </script>
 
 </head>
@@ -47,19 +76,19 @@
   <!--/*/ <th:block th:include="fragments/header :: header"></th:block> /*/-->
 </div>
 
-<div>
+<div class="container">
   <h4>Select a date range</h4>
   <input id="endpoint" type="hidden" th:value="${endpoint}"/>
   <div>
     <label for="year">Year:</label>
-    <select th:field="*{year}" id="year">
+    <select th:field="*{year}" id="year" th:value="${year}">
       <option th:each="year:${years}" th:value="${year}"
               th:utext="${year}"/>
     </select>
   </div>
   <div>
     <label for="month">Month:</label>
-    <select th:field="*{month}" id="month">
+    <select th:field="*{month}" id="month" th:value="${month}">
       <option th:each="key:${months.keySet()}" th:value="${key}"
               th:utext="${months.get(key)}"/>
     </select>
@@ -69,29 +98,36 @@
   </div>
 </div>
 
-<div class="container">
-  <div id="chart_div"></div>
+
+
+<div th:if="${not #lists.isEmpty(data.rows)}">
+
+  <div class="container">
+    <div id="chart_div"></div>
+  </div>
+
+  <div class="container">
+    <table id="datagrid" class="table table-striped">
+      <thead>
+        <tr>
+          <th th:each="headerColData:${data.header}" th:text="${headerColData}"/>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="row:${data.rows}">
+          <td th:each="rowColData:${row}" th:text="${rowColData}"/>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <th th:each="footerColData:${data.footer}" th:text="${footerColData}"/>
+        </tr>
+      </tfoot>
+    </table>
+    <input id="chartData" type="hidden" th:value="${data.chartData}">
+  </div>
+
 </div>
 
-<div class="container">
-  <table id="datagrid" class="table table-striped">
-    <thead>
-      <tr>
-        <th th:each="headerColData:${data.header}" th:text="${headerColData}"/>
-      </tr>
-    </thead>
-    <tbody>
-      <tr th:each="row:${data.rows}">
-        <td th:each="rowColData:${row}" th:text="${rowColData}"/>
-      </tr>
-    </tbody>
-    <tfoot>
-      <tr>
-        <th th:each="footerColData:${data.footer}" th:text="${footerColData}"/>
-      </tr>
-    </tfoot>
-  </table>
-  <input id="chartData" type="hidden" th:value="${data.chartData}">
-</div>
 </body>
 </html>
