@@ -25,10 +25,14 @@
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
 
-      window.onload = addHandlers;
+      window.onload = onLoad;
+
+      function onLoad() {
+        addHandlers();
+        updateSelectors();
+      }
 
       function addHandlers() {
-          console.log("Add handlers");
           var table = document.getElementById("datagrid");
           if (table != null) {
               var headerRow = table.rows[0];
@@ -46,8 +50,8 @@
       var cellClickHandler = function(day, category) {
           var headerRow = document.getElementById("datagrid").rows[0];
           return function() {
-              var year = $("#year").val();
-              var month = $("#month").val();
+              var year = $("#selectedYear").val();
+              var month = $("#selectedMonth").val();
               window.location.href="/expenses?year=" + year + "&month=" + month + "&day=" + day + "&category=" + category;
           };
       }
@@ -66,7 +70,20 @@
         window.location.replace(endpoint + "?year=" + year + "&month=" + month);
       }
 
-
+      function updateSelectors() {
+        var years = $("#year")[0];
+        var selectedYear = $("#selectedYear").val();
+        for (var i = 0; i < years.options.length; i++) {
+            var year = years.options[i].value
+            years.options[i].defaultSelected = year == selectedYear;
+        }
+        var months = $("#month")[0];
+        var selectedMonth = $("#selectedMonth").val();
+        for (var i = 0; i < months.options.length; i++) {
+            var month = months.options[i].value
+            months.options[i].defaultSelected = month == selectedMonth;
+        }
+      }
 
   </script>
 
@@ -78,7 +95,6 @@
 
 <div class="container">
   <h4>Select a date range</h4>
-  <input id="endpoint" type="hidden" th:value="${endpoint}"/>
   <div>
     <label for="year">Year:</label>
     <select th:field="*{year}" id="year" th:value="${year}">
@@ -128,6 +144,10 @@
   </div>
 
 </div>
+
+<input id="endpoint" type="hidden" th:value="${endpoint}"/>
+<input id="selectedYear" type="hidden" th:value="${year}"/>
+<input id="selectedMonth" type="hidden" th:value="${month}"/>
 
 </body>
 </html>

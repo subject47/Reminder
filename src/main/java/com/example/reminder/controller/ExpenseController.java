@@ -141,6 +141,6 @@ public class ExpenseController {
     expense.setDescription(expenseForm.getDescription());
     expenseService.save(expense);
     LocalDate localDate = DateUtils.asLocalDate(expense.getDate());
-    return "redirect:/expenses?year=" + localDate.getYear() + "&month=" + localDate.getMonth().getValue();
+    return "redirect:/datagrid?year=" + localDate.getYear() + "&month=" + localDate.getMonth().getValue();
   }
 }

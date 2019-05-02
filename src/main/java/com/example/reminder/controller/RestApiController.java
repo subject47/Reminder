@@ -6,8 +6,8 @@ import com.example.reminder.forms.ChartDataForm;
 import com.example.reminder.services.CategoryService;
 import com.example.reminder.services.ExpenseService;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +45,8 @@ public class RestApiController {
   // This method creates a Google charts API specific data structure to feed the chart with.
   @GetMapping("/chartdata")
   public ChartDataForm generateChartData(@RequestParam("date") String timestamp, Authentication authentication) {
-    LocalDate date = Instant.ofEpochMilli(Long.parseLong(timestamp))
-        .atZone(ZoneId.systemDefault())
-        .toLocalDate();
+    ZonedDateTime date = Instant.ofEpochMilli(Long.parseLong(timestamp))
+        .atZone(ZoneId.systemDefault());
     return expenseService.buildChartData(date.getYear(), date.getMonthValue(), authentication.getName());
   }
 
