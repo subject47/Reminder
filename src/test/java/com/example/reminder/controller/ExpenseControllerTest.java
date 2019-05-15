@@ -1,6 +1,8 @@
 package com.example.reminder.controller;
 
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -97,19 +99,23 @@ public class ExpenseControllerTest {
   void expenses() throws Exception {
     Year year = Year.of(YEAR);
     Month month = Month.of(MONTH);
-    when(expenseService.findExpensesByYearAndMonthAndUsername(year, month, "user"))
+    int day = 1;
+    String category = "category";
+    String user = "user";
+    when(expenseService.findExpensesByYearMonthDayCategoryAndUsername(year, month, day, category, user))
         .thenReturn(expenses);
 
-    mvc.perform(get("/expenses?year=2018&month=5"))
+    mvc.perform(get("/expenses?year=2018&month=5&day=1&category=category"))
         .andExpect(status().isOk())
         .andExpect(model().attribute("data", expenses))
         .andExpect(model().attributeExists("years"))
         .andExpect(model().attributeExists("months"))
         .andExpect(model().attributeExists("year"))
         .andExpect(model().attributeExists("month"))
+        .andExpect(model().attributeExists("endpoint"))
         .andExpect(view().name("expenses"));
 
-    verify(expenseService).findExpensesByYearAndMonthAndUsername(year, month, "user");
+    verify(expenseService, times(1)).findExpensesByYearMonthDayCategoryAndUsername(year, month, day, category, user);
   }
 
   @Test
@@ -121,7 +127,28 @@ public class ExpenseControllerTest {
     mvc.perform(get("/expense/new"))
         .andExpect(status().isOk())
         .andExpect(model().attribute("expenseForm", Matchers.equalTo(form)));
-    verify(categoryService).listAll();
+
+    verify(categoryService, times(1)).listAll();
+    verify(categoryService, never()).findByName(anyString());
+  }
+
+  @Test
+  public void expense_new_withParameters() throws Exception {
+    when(categoryService.listAll()).thenReturn(categories);
+    Category category = new Category();
+    category.setId(1);
+    when(categoryService.findByName("category_name")).thenReturn(category);
+    ExpenseForm form = new ExpenseForm();
+    form.setCategories(categories);
+    form.setDate("2019-05-12");
+    form.setCategoryId(1);
+
+    mvc.perform(get("/expense/new?year=2019&month=5&day=12&category=category_name"))
+        .andExpect(status().isOk())
+        .andExpect(model().attribute("expenseForm", Matchers.equalTo(form)));
+
+    verify(categoryService, times(1)).listAll();
+    verify(categoryService, times(1)).findByName("category_name");
   }
 
   @Test
@@ -134,8 +161,8 @@ public class ExpenseControllerTest {
         .andExpect(model().attribute("expenseForm", buildExpenseForm()))
         .andExpect(view().name("expenseForm"));
 
-    verify(categoryService).listAll();
-    verify(expenseService).getById(1);
+    verify(categoryService, times(1)).listAll();
+    verify(expenseService, times(1)).getById(1);
   }
 
   @Test
@@ -149,7 +176,7 @@ public class ExpenseControllerTest {
         .param("description", "expense description").with(csrf()))
         .andDo(print())
         .andExpect(status().is3xxRedirection())
-        .andExpect(view().name("redirect:/expenses?year=2018&month=4"));
+        .andExpect(view().name("redirect:/datagrid?year=2018&month=4"));
   }
 
   @Test
@@ -168,7 +195,7 @@ public class ExpenseControllerTest {
         .andExpect(model().attributeExists("month"))
         .andExpect(view().name("datagrid"));
 
-    verify(expenseService).buildDataGrid(year, month, "user");
+    verify(expenseService, times(1)).buildDataGrid(year, month, "user");
   }
 
   private ExpenseForm buildExpenseForm() {

@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,13 +112,16 @@ public class ExpenseController {
   @GetMapping("/expense/new")
   public String expense(Model model,
       @RequestParam(required=false) String category,
-      @RequestParam(required=false) int year,
-      @RequestParam(required=false) int month,
-      @RequestParam(required=false) int day) {
+      @RequestParam(required=false) Integer year,
+      @RequestParam(required=false) Integer month,
+      @RequestParam(required=false) Integer day) {
     ExpenseForm form = new ExpenseForm();
-    form.setCategoryId(categoryService.findByName(category).getId());
+    if (year != null && month != null && day != null) {
+      Date date = DateUtils.asDate(LocalDate.of(year, month, day));
+      form.setCategoryId(categoryService.findByName(category).getId());
+      form.setDate(dateFormatter.format(date));
+    }
     form.setCategories(categoryService.listAll());
-    form.setDate(dateFormatter.format(DateUtils.asDate(LocalDate.of(year, month, day))));
     model.addAttribute(EXPENSE_FORM, form);
     return EXPENSE_FORM;
   }
