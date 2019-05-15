@@ -3,6 +3,7 @@ package com.example.reminder.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Objects;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
@@ -52,6 +53,23 @@ public class Role extends AbstractDomainClass {
 	public void removeUser(User user) {
 		this.users.remove(user);
 		user.getRoles().remove(this);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(name);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null || o.getClass() != this.getClass()) {
+			return false;
+		}
+		if (o == this) {
+			return true;
+		}
+		Role other = (Role) o;
+		return Objects.equals(name, other.getName());
 	}
 
 }

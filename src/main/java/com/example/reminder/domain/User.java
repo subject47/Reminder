@@ -3,6 +3,7 @@ package com.example.reminder.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Objects;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -120,6 +121,28 @@ public class User extends AbstractDomainClass {
 
 	public void setExpenses(List<Expense> expenses) {
 		this.expenses = expenses;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(username, password, repeatPassword, encryptedPassword, enabled, roles);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (o == null || o.getClass() != this.getClass()) {
+			return false;
+		}
+		if (o == this) {
+			return true;
+		}
+		User other = (User) o;
+		return Objects.equals(username, other.getUsername())
+				&& Objects.equals(password, other.getPassword())
+				&& Objects.equals(repeatPassword, other.getRepeatPassword())
+				&& Objects.equals(encryptedPassword, other.getEncryptedPassword())
+				&& Objects.equals(enabled, other.getEnabled())
+				&& Objects.equals(roles, other.getRoles());
 	}
 
 }

@@ -15,6 +15,10 @@ public class TestUtils {
     private Category category;
     private String description;
 
+    public static ExpenseBuilder builder() {
+      return new ExpenseBuilder();
+    }
+
     public ExpenseBuilder id(Integer id) {
       this.id = id;
       return this;
@@ -62,6 +66,11 @@ public class TestUtils {
     private Integer id;
     private String name;
     private String description;
+    private int priority;
+
+    public static CategoryBuilder builder() {
+      return new CategoryBuilder();
+    }
 
     public CategoryBuilder id(Integer id) {
       this.id = id;
@@ -78,11 +87,17 @@ public class TestUtils {
       return this;
     }
 
+    public CategoryBuilder priority(int priority) {
+      this.priority = priority;
+      return this;
+    }
+
     public Category build() {
       Category category = new Category();
       category.setId(id);
       category.setName(name);
       category.setDescription(description);
+      category.setPriority(priority);
       return category;
     }
   }

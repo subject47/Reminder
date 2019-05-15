@@ -1,6 +1,8 @@
 package com.example.reminder.controller;
 
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -14,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
 import com.example.reminder.domain.User;
+import com.example.reminder.forms.DataGridForm;
 import com.example.reminder.forms.ExpenseForm;
 import com.example.reminder.services.CategoryService;
 import com.example.reminder.services.ExpenseService;
@@ -22,10 +25,12 @@ import com.example.reminder.util.TestUtils.CategoryBuilder;
 import com.example.reminder.util.TestUtils.ExpenseBuilder;
 import com.example.reminder.utils.DateUtils;
 import com.google.common.collect.Lists;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.List;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -42,6 +47,8 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 @WithMockUser
 public class ExpenseControllerTest {
+
+  private static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd");
 
   private static final int YEAR = 2018;
   private static final int MONTH = 5;
@@ -89,57 +96,77 @@ public class ExpenseControllerTest {
   }
 
   @Test
-  void dates() throws Exception {
-    mvc.perform(get("/dates"))
+  void expenses() throws Exception {
+    Year year = Year.of(YEAR);
+    Month month = Month.of(MONTH);
+    int day = 1;
+    String category = "category";
+    String user = "user";
+    when(expenseService.findExpensesByYearMonthDayCategoryAndUsername(year, month, day, category, user))
+        .thenReturn(expenses);
+
+    mvc.perform(get("/expenses?year=2018&month=5&day=1&category=category"))
         .andExpect(status().isOk())
+        .andExpect(model().attribute("data", expenses))
         .andExpect(model().attributeExists("years"))
         .andExpect(model().attributeExists("months"))
         .andExpect(model().attributeExists("year"))
         .andExpect(model().attributeExists("month"))
-        .andExpect(view().name("datesSelector"));
+        .andExpect(model().attributeExists("endpoint"))
+        .andExpect(view().name("expenses"));
+
+    verify(expenseService, times(1)).findExpensesByYearMonthDayCategoryAndUsername(year, month, day, category, user);
   }
 
   @Test
-  void expenses() throws Exception {
-    Year year = Year.of(YEAR);
-    Month month = Month.of(MONTH);
-    when(expenseService.findExpensesByYearAndMonthAndUsername(year, month, "user"))
-        .thenReturn(expenses);
-
-    mvc.perform(get("/expenses?year=2018&month=5"))
-        .andExpect(status().isOk())
-        .andExpect(model().attribute("expenses", expenses))
-        .andExpect(view().name("expenseList"));
-
-    verify(expenseService).findExpensesByYearAndMonthAndUsername(year, month, "user");
-  }
-
-  @Test
-  public void newExpense() throws Exception {
+  public void expense_new() throws Exception {
     when(categoryService.listAll()).thenReturn(categories);
+    ExpenseForm form = new ExpenseForm();
+    form.setCategories(categories);
 
     mvc.perform(get("/expense/new"))
         .andExpect(status().isOk())
-        .andExpect(model().attribute("expenseForm", new ExpenseForm(categories)));
-    verify(categoryService).listAll();
+        .andExpect(model().attribute("expenseForm", Matchers.equalTo(form)));
+
+    verify(categoryService, times(1)).listAll();
+    verify(categoryService, never()).findByName(anyString());
   }
 
   @Test
-  void editExpense() throws Exception {
+  public void expense_new_withParameters() throws Exception {
+    when(categoryService.listAll()).thenReturn(categories);
+    Category category = new Category();
+    category.setId(1);
+    when(categoryService.findByName("category_name")).thenReturn(category);
+    ExpenseForm form = new ExpenseForm();
+    form.setCategories(categories);
+    form.setDate("2019-05-12");
+    form.setCategoryId(1);
+
+    mvc.perform(get("/expense/new?year=2019&month=5&day=12&category=category_name"))
+        .andExpect(status().isOk())
+        .andExpect(model().attribute("expenseForm", Matchers.equalTo(form)));
+
+    verify(categoryService, times(1)).listAll();
+    verify(categoryService, times(1)).findByName("category_name");
+  }
+
+  @Test
+  void expense_edit() throws Exception {
     when(categoryService.listAll()).thenReturn(categories);
     when(expenseService.getById(1)).thenReturn(expense);
 
     mvc.perform(get("/expense/edit?id=1"))
         .andExpect(status().isOk())
-        .andExpect(model().attribute("expenseForm", new ExpenseForm(expense, categories)))
+        .andExpect(model().attribute("expenseForm", buildExpenseForm()))
         .andExpect(view().name("expenseForm"));
 
-    verify(categoryService).listAll();
-    verify(expenseService).getById(1);
+    verify(categoryService, times(1)).listAll();
+    verify(expenseService, times(1)).getById(1);
   }
 
   @Test
-  void expense() throws Exception {
+  void expense_saveOrUpdate() throws Exception {
     when(categoryService.getById(1)).thenReturn(new Category());
     when(userService.findByUsername(anyString())).thenReturn(new User());
     mvc.perform(post("/expense")
@@ -149,6 +176,36 @@ public class ExpenseControllerTest {
         .param("description", "expense description").with(csrf()))
         .andDo(print())
         .andExpect(status().is3xxRedirection())
-        .andExpect(view().name("redirect:/expenses?year=2018&month=4"));
+        .andExpect(view().name("redirect:/datagrid?year=2018&month=4"));
+  }
+
+  @Test
+  void datagrid() throws Exception {
+    Year year = Year.of(YEAR);
+    Month month = Month.of(MONTH);
+    DataGridForm form = new DataGridForm();
+    when(expenseService.buildDataGrid(year, month, "user")).thenReturn(form);
+
+    mvc.perform(get("/datagrid?year=2018&month=5"))
+        .andExpect(status().isOk())
+        .andExpect(model().attribute("data", form))
+        .andExpect(model().attributeExists("years"))
+        .andExpect(model().attributeExists("months"))
+        .andExpect(model().attributeExists("year"))
+        .andExpect(model().attributeExists("month"))
+        .andExpect(view().name("datagrid"));
+
+    verify(expenseService, times(1)).buildDataGrid(year, month, "user");
+  }
+
+  private ExpenseForm buildExpenseForm() {
+    ExpenseForm form = new ExpenseForm();
+    form.setExpense(expense);
+    form.setCategories(categories);
+    form.setAmount(expense.getAmount());
+    form.setDate(DATE_FORMATTER.format(expense.getDate()));
+    form.setDescription(expense.getDescription());
+    form.setCategoryId(expense.getCategory().getId());
+    return form;
   }
 }
