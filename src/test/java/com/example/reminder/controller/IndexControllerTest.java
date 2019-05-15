@@ -7,11 +7,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import com.example.reminder.domain.Role;
 import com.example.reminder.domain.User;
@@ -51,7 +51,7 @@ public class IndexControllerTest {
   void index() throws Exception {
     mvc.perform(get("/index").with(csrf()))
         .andDo(print())
-        .andExpect(status().is2xxSuccessful())
+        .andExpect(status().isOk())
         .andExpect(view().name("index"));
   }
 
@@ -59,7 +59,7 @@ public class IndexControllerTest {
   void login() throws Exception {
     mvc.perform(get("/login").with(csrf()))
         .andDo(print())
-        .andExpect(status().is2xxSuccessful())
+        .andExpect(status().isOk())
         .andExpect(view().name("login"));
   }
 
@@ -67,7 +67,7 @@ public class IndexControllerTest {
   void registration() throws Exception {
     mvc.perform(get("/registration").with(csrf()))
         .andDo(print())
-        .andExpect(status().is2xxSuccessful())
+        .andExpect(status().isOk())
         .andExpect(view().name("registration"));
   }
 
@@ -96,7 +96,7 @@ public class IndexControllerTest {
         .param(PASSWORD, "password")
         .param(REPEAT_PASSWORD, "password").with(csrf()))
         .andDo(print())
-        .andExpect(status().is2xxSuccessful())
+        .andExpect(status().isOk())
         .andExpect(model().attribute("message", "User exists!"))
         .andExpect(view().name("/registration"));
 
@@ -111,7 +111,7 @@ public class IndexControllerTest {
         .param(PASSWORD, "p")
         .param(REPEAT_PASSWORD, "password").with(csrf()))
         .andDo(print())
-        .andExpect(status().is2xxSuccessful())
+        .andExpect(status().isOk())
         .andExpect(model().attribute("message", "Password must contain at least 3 characters."))
         .andExpect(view().name("/registration"));
 
@@ -126,7 +126,7 @@ public class IndexControllerTest {
         .param(PASSWORD, "password")
         .param(REPEAT_PASSWORD, "repeatPassword").with(csrf()))
         .andDo(print())
-        .andExpect(status().is2xxSuccessful())
+        .andExpect(status().isOk())
         .andExpect(model().attribute("message", "Passwords don't match!"))
         .andExpect(view().name("/registration"));
 

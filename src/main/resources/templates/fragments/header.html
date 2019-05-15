@@ -15,7 +15,8 @@
                         <li sec:authorize="hasAnyAuthority('ADMIN', 'USER')"><a href="#" th:href="@{/products}">Products</a></li>
                         <li sec:authorize="hasAuthority('ADMIN')"><a href="#" th:href="@{/product/new}">Create Product</a></li>
                         <li sec:authorize="isAnonymous()"><a href="#" th:href="@{/login}">Sign In</a></li>
-                        <li sec:authorize="hasAnyAuthority('ADMIN', 'USER')"><a href="#" th:href="@{/dates}">Select Date Range</a></li>
+                        <li sec:authorize="hasAnyAuthority('ADMIN', 'USER')"><a href="#" th:href="@{/expenses?year=&month=}">Expenses</a></li>
+                        <li sec:authorize="hasAnyAuthority('ADMIN', 'USER')"><a href="#" th:href="@{/datagrid?year=&month=}">Data Grid</a></li>
                         <li sec:authorize="hasAnyAuthority('ADMIN', 'USER')"><a href="#" th:href="@{/expense/new}">Create Expense</a></li>
                         <li sec:authorize="hasAnyAuthority('ADMIN', 'USER')"><a href="#" th:href="@{/allexpenses}">All Expenses</a></li>
                         <li sec:authorize="hasAnyAuthority('ADMIN', 'USER')"><a href="#" th:href="@{/expensesbycategory}">Grouped Expenses</a></li>

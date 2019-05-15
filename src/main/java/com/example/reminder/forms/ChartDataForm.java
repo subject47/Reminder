@@ -1,11 +1,13 @@
 package com.example.reminder.forms;
 
 import java.util.Collection;
+import java.util.Objects;
 
 /**
  * Class containing data for chart
  */
 public class ChartDataForm {
+
   private Collection<Column> cols;
   private Collection<Row> rows;
 
@@ -30,9 +32,27 @@ public class ChartDataForm {
     this.rows = rows;
   }
 
+  @Override
+  public int hashCode() {
+    return Objects.hash(cols, rows);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || this.getClass() != o.getClass()) {
+      return false;
+    }
+    if (this == o) {
+      return true;
+    }
+    ChartDataForm other = (ChartDataForm) o;
+    return Objects.equals(cols, other.getCols())
+        && Objects.equals(rows, other.getRows());
+  }
 
 
   public static class Column {
+
     private String id = "";
     private String label = "";
     private String pattern = "";
@@ -74,11 +94,31 @@ public class ChartDataForm {
     public void setType(String type) {
       this.type = type;
     }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(id, label, pattern, type);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == null || this.getClass() != o.getClass()) {
+        return false;
+      }
+      if (this == o) {
+        return true;
+      }
+      Column other = (Column) o;
+      return Objects.equals(id, other.getId())
+          && Objects.equals(label, other.getLabel())
+          && Objects.equals(pattern, other.getPattern())
+          && Objects.equals(type, other.getType());
+    }
   }
 
 
-
   public static class Row {
+
     private Collection<Data> c;
 
     public Row(Collection<Data> c) {
@@ -93,9 +133,25 @@ public class ChartDataForm {
       this.c = c;
     }
 
+    @Override
+    public int hashCode() {
+      return Objects.hash(c);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == null || this.getClass() != o.getClass()) {
+        return false;
+      }
+      if (this == o) {
+        return true;
+      }
+      return Objects.equals(c, ((Row) o).getC());
+    }
 
 
     public static class Data {
+
       private Object v;
       private Object f;
 
@@ -118,6 +174,25 @@ public class ChartDataForm {
       public void setF(Object f) {
         this.f = f;
       }
+
+      @Override
+      public int hashCode() {
+        return Objects.hash(v, f);
+      }
+
+      @Override
+      public boolean equals(Object o) {
+        if (o == null || this.getClass() != o.getClass()) {
+          return false;
+        }
+        if (this == o) {
+          return true;
+        }
+        Data other = (Data) o;
+        return Objects.equals(v, other.getV())
+            && Objects.equals(f, other.getF());
+      }
+
     }
   }
 }

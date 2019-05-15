@@ -2,11 +2,15 @@ package com.example.reminder.controller;
 
 import com.example.reminder.domain.Category;
 import com.example.reminder.domain.Expense;
+import com.example.reminder.forms.ChartDataForm;
+import com.example.reminder.forms.DataGridForm;
 import com.example.reminder.forms.ExpenseForm;
 import com.example.reminder.services.CategoryService;
 import com.example.reminder.services.ExpenseService;
 import com.example.reminder.services.UserService;
 import com.example.reminder.utils.DateUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import java.text.ParseException;
@@ -14,7 +18,9 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -27,9 +33,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class ExpenseController {
 
   private static final String EXPENSE_FORM = "expenseForm";
+  private static final String EXPENSES = "expenses";
+  private static final String DATAGRID = "datagrid";
 
-  private static final String DATE_FORMAT = "yyyy-MM-dd";
-  private final SimpleDateFormat dateFormatter = new SimpleDateFormat(DATE_FORMAT);
+  private final SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
 
   @Autowired
   private UserService userService;
@@ -59,29 +66,61 @@ public class ExpenseController {
           .put(Month.DECEMBER.getValue(), "December")
           .build();
 
-
-  @GetMapping("/dates")
-  public String dates(Model model) {
-    model.addAttribute("years", YEARS);
-    model.addAttribute("months", MONTHS);
-    model.addAttribute("year", 1);
-    model.addAttribute("month", 1);
-    return "datesSelector";
+  @GetMapping("/expenses")
+  public String expense(@RequestParam Integer year, @RequestParam Integer month, @RequestParam Integer day,
+      @RequestParam String category, Model model, Authentication authentication) {
+    if (year == null || month == null) {
+      LocalDate now = LocalDate.now();
+      year = now.getYear();
+      month = now.getMonthValue();
+    }
+    List<Expense> expenses = expenseService.findExpensesByYearMonthDayCategoryAndUsername(
+            Year.of(year), Month.of(month), day, category, authentication.getName());
+    model.addAllAttributes(Map.of(
+        "years", YEARS,
+        "months", MONTHS,
+        "year", year,
+        "month", month,
+        "data", expenses,
+        "endpoint", EXPENSES));
+    return EXPENSES;
   }
 
-  @GetMapping("/expenses")
-  public String expense(@RequestParam Integer year, @RequestParam Integer month, Model model,
-      Authentication authentication) {
-    List<Expense> expenses =
-        expenseService.findExpensesByYearAndMonthAndUsername(
-            Year.of(year), Month.of(month), authentication.getName());
-    model.addAttribute("expenses", expenses);
-    return "expenseList";
+  @GetMapping("/datagrid")
+  public String datagrid(@RequestParam Integer year, @RequestParam Integer month, Model model,
+      Authentication authentication) throws JsonProcessingException {
+    if (year == null || month == null) {
+      LocalDate now = LocalDate.now();
+      year = now.getYear();
+      month = now.getMonthValue();
+    }
+    DataGridForm dataGrid =
+        expenseService.buildDataGrid(Year.of(year), Month.of(month), authentication.getName());
+    ChartDataForm chartData =
+        expenseService.buildChartData(year, month, authentication.getName());
+    dataGrid.setChartData(new ObjectMapper().writeValueAsString(chartData));
+    model.addAllAttributes(Map.of(
+        "years", YEARS,
+        "months", MONTHS,
+        "year", year,
+        "month", month,
+        "data", dataGrid,
+        "endpoint", DATAGRID));
+    return DATAGRID;
   }
 
   @GetMapping("/expense/new")
-  public String expense(Model model) {
+  public String expense(Model model,
+      @RequestParam(required=false) String category,
+      @RequestParam(required=false) Integer year,
+      @RequestParam(required=false) Integer month,
+      @RequestParam(required=false) Integer day) {
     ExpenseForm form = new ExpenseForm();
+    if (year != null && month != null && day != null) {
+      Date date = DateUtils.asDate(LocalDate.of(year, month, day));
+      form.setCategoryId(categoryService.findByName(category).getId());
+      form.setDate(dateFormatter.format(date));
+    }
     form.setCategories(categoryService.listAll());
     model.addAttribute(EXPENSE_FORM, form);
     return EXPENSE_FORM;
@@ -112,6 +151,6 @@ public class ExpenseController {
     expense.setDescription(expenseForm.getDescription());
     expenseService.save(expense);
     LocalDate localDate = DateUtils.asLocalDate(expense.getDate());
-    return "redirect:/expenses?year=" + localDate.getYear() + "&month=" + localDate.getMonth().getValue();
+    return "redirect:/datagrid?year=" + localDate.getYear() + "&month=" + localDate.getMonth().getValue();
   }
 }
