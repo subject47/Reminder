@@ -109,9 +109,15 @@ public class ExpenseController {
   }
 
   @GetMapping("/expense/new")
-  public String expense(Model model) {
+  public String expense(Model model,
+      @RequestParam(required=false) String category,
+      @RequestParam(required=false) int year,
+      @RequestParam(required=false) int month,
+      @RequestParam(required=false) int day) {
     ExpenseForm form = new ExpenseForm();
+    form.setCategoryId(categoryService.findByName(category).getId());
     form.setCategories(categoryService.listAll());
+    form.setDate(dateFormatter.format(DateUtils.asDate(LocalDate.of(year, month, day))));
     model.addAttribute(EXPENSE_FORM, form);
     return EXPENSE_FORM;
   }

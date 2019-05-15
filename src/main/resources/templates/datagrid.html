@@ -41,19 +41,26 @@
                   for (var j = 1; j < currentRow.cells.length - 1; j++) {
                       var currentCell = currentRow.cells[j];
                       var category = headerRow.cells[j].innerHTML;
-                      currentCell.onclick = cellClickHandler(i, category)
+                      currentCell.onclick = cellClickHandler(i, category, currentCell.innerHTML);
                   }
               }
           }
       }
 
-      var cellClickHandler = function(day, category) {
+      var cellClickHandler = function(day, category, cellData) {
           var headerRow = document.getElementById("datagrid").rows[0];
-          return function() {
-              var year = $("#selectedYear").val();
-              var month = $("#selectedMonth").val();
-              window.location.href="/expenses?year=" + year + "&month=" + month + "&day=" + day + "&category=" + category;
-          };
+          var year = $("#selectedYear").val();
+          var month = $("#selectedMonth").val();
+          var parameters = "?year=" + year + "&month=" + month + "&day=" + day + "&category=" + category;
+          if (cellData == null || cellData == "") {
+            return function() {
+                window.location.href="/expense/new" + parameters;
+            }
+          } else {
+            return function() {
+                window.location.href="/expenses" + parameters;
+            };
+          }
       }
 
       function drawChart() {
